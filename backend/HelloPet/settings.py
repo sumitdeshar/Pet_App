@@ -29,8 +29,17 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = int(os.environ.get("DEBUG", default=0))
 
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:54370",  # Assuming your Flutter app is running on localhost
+#     "http://localhost:8000",  # Assuming your Flutter app is running on localhost
+#     "http://10.0.2.2:8000",   # Assuming this is the address used by the Flutter emulator
+# ]
+#'10.0.2.2', '127.0.0.1'
+ALLOWED_HOSTS = ['10.0.2.2','127.0.0.1']
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -43,11 +52,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'core',
+    # 'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -60,7 +71,7 @@ ROOT_URLCONF = 'HelloPet.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR, 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -141,10 +152,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
         'rest_framework_json_api.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer'
     ),
 }
+
+CSRF_COOKIE_SECURE = True
 
 # Base url to serve media files  
 MEDIA_URL = '/media/'
