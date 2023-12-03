@@ -9,13 +9,18 @@ class UserRegistrationSerializer(serializers.Serializer):
     password2 = serializers.CharField()
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
+    username = serializers.CharField(max_length=100)
+    password = serializers.CharField(max_length=100)
     
-    
-class UserSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username","first_name","last_name","email","password",]
+
+
+# class UserSerializer(serializers.Serializer):
+#     username = serializers.CharField()
+#     password = serializers.CharField()
 
 class PetOwnerProfileSerializer(serializers.ModelSerializer):
     class Meta:

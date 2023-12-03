@@ -1,69 +1,45 @@
-from django.shortcuts import render, redirect, HttpResponse
-from .models import *
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from rest_framework import status
-from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view
-from .serializers import *
 from django.http import JsonResponse
+from rest_framework import status
 from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.renderers import JSONRenderer
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from .models import *
+from .serializers import *
 
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
 
-class get_pet_owner_profile(generics.ListCreateAPIView):
-    queryset = PetOwnerProfile.objects.all()
-    serializer_class = PetOwnerProfileSerializer
+def check_user(request, pk):
+    try:
+        queryset = User.objects.get(id=pk)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-# @api_view(['GET'])
-# def get_pet_owner_profile(request):
-#         if request.method == 'GET':
-#             data = PetOwnerProfile.objects.get()
-#             serializer = PetOwnerProfileSerializer(data)
-#             return Response(serializer.data)
+    serializer = UserSerializer(queryset)
 
-# @api_view(["GET", "POST"])
-def register(request):
-    if request.method == 'POST':
-        serializer = UserRegistrationSerializer(data=request.POST)
-        if serializer.is_valid():
-            username = serializer.validated_data.get("username")
-            email = serializer.validated_data.get("email")
-            password = serializer.validated_data.get("password")
-            password2 = serializer.validated_data.get("password2")
+    response = Response(serializer.data, status=status.HTTP_200_OK)
+    response.accepted_renderer = JSONRenderer()
+    response.accepted_media_type = 'application/json'
+    response.renderer_context = {}
+    return response
 
-            if password==password2:
-                if User.objects.filter(email=email).exists():
-                    messages.info(request, "Email Already Used")
-                    return redirect('core:register')
-                elif User.objects.filter(username=username).exists():
-                    messages.info(request, "Username Already Used")
-                    return redirect('core:register')
-                else:
-                    user = User.objects.create_user(username=username, email=email, password=password)
-                    user.save()
-                    return redirect('core:login')
-            else:
-                messages.info(request, "Password did not match")
-                return redirect('core:register')
-        else:
-            # Handle serializer validation errors
-            error_messages = serializer.errors
-            return render(request, 'register.html', {'error_messages': error_messages})
 
-    return render(request, 'register.html')
-
-@api_view(["GET", "POST"])
+@csrf_exempt
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication, BasicAuthentication])
 def login(request):
-
     if request.method == 'POST':
-        # Create a serializer from the form data
         jsondata = request.data
         serializer = LoginSerializer(data=jsondata)
-        
+
         if serializer.is_valid():
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
@@ -72,17 +48,64 @@ def login(request):
             
             if user is not None:
                 auth.login(request, user)
-                print(request.user.id)
-                owner = PetOwnerProfile.objects.get(id=request.user.id)
-                print(owner.address)
-                return redirect('/home')
+                user_data = {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    # Add other user data as needed
+                }
+                return JsonResponse(user_data, status=200)
             else:
-                messages.info(request, "Credentials Invalid")
-                return redirect('/')
+                return JsonResponse({'error': 'Credentials Invalid'}, status=401)
         else:
-            return redirect('/')
-    if request.method == 'GET':
-        return render(request, 'login.html')
+            return JsonResponse({'error': 'Invalid data'}, status=400)
+
+
+# class get_pet_owner_profile(generics.ListCreateAPIView):
+#     queryset = PetOwnerProfile.objects.all()
+#     print('18')
+#     serializer_class = PetOwnerProfileSerializer
+
+@api_view(['GET'])
+def get_pet_owner_profile(request):
+        if request.method == 'GET':
+            data = PetOwnerProfile.objects.get(user=1)
+            serializer = PetOwnerProfileSerializer(data)
+            print('18')
+            return Response(serializer.data)
+
+@csrf_exempt
+@api_view(["POST"])
+def register(request):
+    if request.method == 'POST':
+        print(1)
+        jsondata = request.data
+        serializer = UserRegistrationSerializer(data=jsondata)
+        print(11)
+        if serializer.is_valid():
+            username = serializer.validated_data.get("username")
+            email = serializer.validated_data.get("email")
+            password = serializer.validated_data.get("password")
+            password2 = serializer.validated_data.get("password2")
+            print(111)
+            if password == password2:
+                if User.objects.filter(email=email).exists():
+                    return JsonResponse({'error': 'Email Already Used'}, status=400)
+                elif User.objects.filter(username=username).exists():
+                    return JsonResponse({'error': 'Username Already Used'}, status=400)
+                else:
+                    user = User.objects.create_user(username=username, email=email, password=password)
+                    user.save()
+                    return JsonResponse({'message': 'Registration successful'}, status=200)
+            else:
+                return JsonResponse({'error': 'Password did not match'}, status=400)
+        else:
+            # Handle serializer validation errors
+            return JsonResponse({'error_messages': serializer.errors}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
     
 def logout(request):
     auth.logout(request)
@@ -117,10 +140,10 @@ def pet_profile(request, pet_id):
 #     if request.method == 'POST':
 #         pass
 
-
+@api_view(["GET", "POST"])
 def checkuser(request):
     if request.method == "GET":
-        
-        stu_obj = User.objects.all()
-        stu_seri = UserSerializer(stu_obj, many=True)
-        return render(stu_seri.data)
+        jsondata = User.objects.get(id=request.id)
+        return jsondata
+
+
