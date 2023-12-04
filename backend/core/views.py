@@ -10,18 +10,24 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.renderers import JSONRenderer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import *
 from .serializers import *
+
 
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
 
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+    
 def check_user(request, pk):
     try:
         queryset = User.objects.get(id=pk)
     except User.DoesNotExist:
-        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'User not found', 'status':'HTTP_404_NOT_FOUND'})
 
     serializer = UserSerializer(queryset)
 
@@ -47,18 +53,16 @@ def login(request):
             user = auth.authenticate(username=username, password=password)
             
             if user is not None:
-                auth.login(request, user)
-                user_data = {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    # Add other user data as needed
-                }
-                return JsonResponse(user_data, status=200)
+        
+                    refresh = RefreshToken.for_user(user)
+                    return JsonResponse({
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    })
             else:
-                return JsonResponse({'error': 'Credentials Invalid'}, status=401)
+                return JsonResponse({'error': 'Credentials Invalid', 'status':401})
         else:
-            return JsonResponse({'error': 'Invalid data'}, status=400)
+            return JsonResponse({'error': 'Invalid data', 'status':400})
 
 
 # class get_pet_owner_profile(generics.ListCreateAPIView):
@@ -69,8 +73,8 @@ def login(request):
 @api_view(['GET'])
 def get_pet_owner_profile(request):
         if request.method == 'GET':
-            data = PetOwnerProfile.objects.get(user=1)
-            serializer = PetOwnerProfileSerializer(data)
+            data = Profile.objects.get(user=1)
+            serializer = ProfileSerializer(data)
             print('18')
             return Response(serializer.data)
 
@@ -78,16 +82,16 @@ def get_pet_owner_profile(request):
 @api_view(["POST"])
 def register(request):
     if request.method == 'POST':
-        print(1)
+        
         jsondata = request.data
         serializer = UserRegistrationSerializer(data=jsondata)
-        print(11)
+        
         if serializer.is_valid():
             username = serializer.validated_data.get("username")
             email = serializer.validated_data.get("email")
             password = serializer.validated_data.get("password")
             password2 = serializer.validated_data.get("password2")
-            print(111)
+            
             if password == password2:
                 if User.objects.filter(email=email).exists():
                     return JsonResponse({'error': 'Email Already Used'}, status=400)
@@ -113,8 +117,8 @@ def logout(request):
 
 def owner_profile(request, owner_id):
     print(owner_id)
-    print(PetOwnerProfile)
-    pet_owner = PetOwnerProfile.objects.get(id=owner_id)
+    print(Profile)
+    pet_owner = Profile.objects.get(id=owner_id)
 
     return render(request, 'owner_profile.html', {'pet_owner': pet_owner})
 

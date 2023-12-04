@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import User
 from .models import *
 
@@ -17,12 +18,16 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["username","first_name","last_name","email","password",]
 
-
-# class UserSerializer(serializers.Serializer):
-#     username = serializers.CharField()
-#     password = serializers.CharField()
-
-class PetOwnerProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PetOwnerProfile
+        model = Profile
         fields = ['user', 'phone_number', 'address', 'pet_info']
+        
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['name'] = user.username
+        return token
