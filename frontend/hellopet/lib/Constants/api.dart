@@ -2,20 +2,17 @@
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:hellopet/Models/models.dart';
 
-const String api = "http://127.0.0.1:8000/profile";
+const String baseUrl = "http://127.0.0.1:8000/";
 
 class Profile {
-  final String baseUrl = "http://127.0.0.1:8000/profile";
-  List<PetOwnerProfile> ownProfile = [];
+  final String baseUrl = "http://127.0.0.1:8000/";
   Future<List<dynamic>> getProfile() async {
     try {
       var response = await http.get(Uri.parse(baseUrl));
 
       if (response.statusCode == 200) {
         final List<dynamic> dataList = jsonDecode(response.body);
-
         return dataList;
       } else {
         throw Future.error('Failed to load profile: ${response.statusCode}');

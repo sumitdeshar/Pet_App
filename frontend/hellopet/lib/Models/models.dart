@@ -21,4 +21,16 @@ class PetOwnerProfile {
   factory PetOwnerProfile.fromMap(Map<String, dynamic> map) {
     return PetOwnerProfile.fromJson(map);
   }
+
+  @override
+  String toString() {
+    return '''
+    {
+        "user": $user,
+        "phone_number": "$phone_number",
+        "address": "$address",
+        "pet_info": $pet_info
+    }
+    ''';
+  }
 }
