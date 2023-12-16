@@ -24,19 +24,30 @@ def index(request):
 # class MyTokenObtainPairView(TokenObtainPairView):
 #     serializer_class = MyTokenObtainPairSerializer
     
+@api_view(['GET'])
 def check_user(request, pk):
     try:
-        queryset = User.objects.get(id=pk)
-    except User.DoesNotExist:
-        return Response({'error': 'User not found', 'status':status.HTTP_404_NOT_FOUND})
+        user_profile = Profile.objects.get(user=pk)
+        profile_serializer = PetOwnerProfileSerializer(user_profile)
+        return Response(profile_serializer.data, status=status.HTTP_200_OK)
+    except Profile.DoesNotExist:
+        return Response(
+            {"message": "User profile not found for user with ID: {}".format(pk)},
+            status=status.HTTP_404_NOT_FOUND
+        )
+# def check_user(request, pk):
+#     try:
+#         queryset = Profile.objects.get(user=pk)
+#     except User.DoesNotExist:
+#         return Response({'error': 'User not found', 'status':status.HTTP_404_NOT_FOUND})
 
-    serializer = UserSerializer(queryset)
+#     serializer = ProfileSerializer(queryset)
 
-    response = Response(serializer.data, status=status.HTTP_200_OK)
-    response.accepted_renderer = JSONRenderer()
-    response.accepted_media_type = 'application/json'
-    response.renderer_context = {}
-    return response
+#     response = Response(serializer.data, status=status.HTTP_200_OK)
+#     response.accepted_renderer = JSONRenderer()
+#     response.accepted_media_type = 'application/json'
+#     response.renderer_context = {}
+#     return response
 
 
 @csrf_exempt
@@ -73,12 +84,29 @@ def login(request):
 def get_pet_owner_profile(request):
     if request.method == 'GET':
         try:
-            user_profile = Profile.objects.get(user=request.user.id)
             user_id = request.user.id
-            serializer = ProfileSerializer(user_profile)
-            return Response(serializer.data)
+            user_profile = Profile.objects.get(user=user_id)
+            profile_serializer = PetOwnerProfileSerializer(user_profile)
+            print(profile_serializer.data)
+            return Response(profile_serializer.data)
         except Profile.DoesNotExist:
             return Response({"message": "Authenticated user with ID: {}".format(user_id)}, status=status.HTTP_404_NOT_FOUND)
+        
+            # user_profile = Profile.objects.get(user=request.user.id)
+            # user_id = request.user.id
+            # pet_id = user_profile.pet_info.id
+            # print(pet_id)
+            
+            # user_queryset = User.objects.get(id=user_id)
+            # user_serializer = UserSerializer(user_queryset)
+            
+            # # pet_queryset =Pet.objects.get(id=pet_id)
+            # # pet_serializer = PetSerializer(user_profile)
+            
+            # profile_serializer = ProfileSerializer(user_profile)
+            # response_data = {profile_serializer.data,user_serializer.data}
+            # print(response_data)
+            # return Response(response_data)
 
 @csrf_exempt
 @api_view(["POST"])

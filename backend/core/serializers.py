@@ -16,12 +16,25 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username","first_name","last_name","email","password",]
+        fields = ["username","first_name","last_name"]
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['user', 'phone_number', 'address', 'pet_info']
+        fields = '__all__'
+        
+class PetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pet
+        fields = '__all__'
+
+class PetOwnerProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    pets = PetSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ['user','pets','bio','photo']
         
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod

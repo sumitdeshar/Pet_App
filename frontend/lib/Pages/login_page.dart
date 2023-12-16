@@ -17,18 +17,19 @@ class _LoginPageState extends State<LoginPage> {
   final storage = const FlutterSecureStorage();
   bool isLoading = false;
 
-  Future<void> storeToken(String token) async {
-    await storage.write(key: 'token', value: token);
+  Future<void> storeTokens(String accessToken, String refreshToken) async {
+    await storage.write(key: 'access_token', value: accessToken);
+    await storage.write(key: 'refresh_token', value: refreshToken);
   }
 
   Future<String?> getToken() async {
-    return await storage.read(key: 'token');
+    return await storage.read(key: 'access_token');
   }
 
   LoginAuth() async {
     try {
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/login'),
+        Uri.parse('http://10.0.2.2:8000/login'),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -39,16 +40,19 @@ class _LoginPageState extends State<LoginPage> {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final String token = responseData['access'];
-        print(response.body);
-        await storeToken(token);
+        final String accessToken = responseData['access'];
+        final String refreshToken = responseData['refresh'];
 
-        print('Login successful. Token: $token');
+        // Store both tokens securely
+        await storeTokens(accessToken, refreshToken);
+
+        print(
+            'Login successful. Access Token: $accessToken, Refresh Token: $refreshToken');
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (context) => const MyHomePage(title: 'Pet App')),
+          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Pet App')),
+          //title: 'Pet App'
         );
       }
     } catch (e) {
