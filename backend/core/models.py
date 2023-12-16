@@ -7,7 +7,7 @@ class Profile(models.Model):
     phone_number = models.CharField(max_length=15)
     address = models.TextField()
     pet_info = models.ManyToManyField('Pet', blank=True)
-    photo = models.ImageField(upload_to='media/profile_photos/', blank=True, null=True)
+    photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
 
     def __str__(self):
         return self.user.username
