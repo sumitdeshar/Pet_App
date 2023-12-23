@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/Pages/community/list_community.dart';
+import 'package:frontend/Pages/home_page.dart';
+import 'package:frontend/Pages/owner_profile.dart';
+import 'package:frontend/Pages/register_page.dart';
+import 'package:frontend/Widgets/appbar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'home_page.dart';
+// import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -51,7 +56,10 @@ class _LoginPageState extends State<LoginPage> {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Pet App')),
+          MaterialPageRoute(
+              builder: (context) => MyHomePage(
+                    title: 'Owner Profile',
+                  )),
           //title: 'Pet App'
         );
       }
@@ -64,13 +72,26 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: customAppBar(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Container(
+            //   height: 80,
+            //   color: Colors.blue,
+            // ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //     color: Colors.greenAccent,
+            //     borderRadius: BorderRadius.only(
+            //       topLeft: Radius.circular(15),
+            //       topRight: Radius.circular(15),
+            //     ),
+            //   ),
+            // ),
             TextField(
               controller: _usernameController,
               decoration: const InputDecoration(labelText: 'Username'),
@@ -80,6 +101,27 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passwordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Password'),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Create an Account',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            GestureDetector(
+              onTap: () {
+                // Navigate to RegistrationPage when the "Create an Account" text is tapped
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegistrationPage()),
+                );
+              },
+              child: Text(
+                'New to the community? Create an account',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline),
+              ),
             ),
             const SizedBox(height: 32.0),
             ElevatedButton(

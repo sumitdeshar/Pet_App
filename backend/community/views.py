@@ -1,12 +1,58 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import *
 from .serializers import *
+from core.utlis import get_user_id_from_token
+
+#views
+@api_view(['POST'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def create_community(request):
+    if request.method == 'POST':
+        auth_header = request.headers.get('Authorization')
+        user_id = get_user_id_from_token(auth_header)
+        if user_id is None:
+            return Response({'error': 'Invalid or expired token'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        json_object = request.data
+        serializer = CommunityProfileSerializer(data=json_object)
+
+        if serializer.is_valid():
+            community_name = serializer.validated_data.get("community_name")
+            description = serializer.validated_data.get("description")
+
+            if CommunityProfile.objects.filter(community_name=community_name).exists():
+                return Response({'error': 'Community Name Already Used'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                community = CommunityProfile.objects.create(
+                    community_name=community_name,
+                    description=description,
+                )
+
+                user_instance = User.objects.get(id=user_id)
+                if user_instance is not None:
+                    membership = CommunityMembership.objects.create(
+                        user=user_instance,
+                        community=community,
+                        is_admin=True  # Assuming you want the creator to be an admin
+                    )
+                else:
+                    return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'message': 'Community is created successfully'}, status=status.HTTP_200_OK)
+
+        errors = serializer.errors
+        return Response(data={'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(data={'message': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 @api_view(['GET'])
 def community_profile_list(request):
@@ -16,14 +62,52 @@ def community_profile_list(request):
 
 @api_view(['GET'])
 def community_profile_detail(request, pk):
+    auth_header = request.headers.get('Authorization')
+    user_id = get_user_id_from_token(auth_header)
+
+    if user_id is None:
+        return Response({'error': 'Invalid or expired token'}, status=status.HTTP_401_UNAUTHORIZED)
+
     try:
-        community = CommunityProfile.objects.get(pk=pk)
+        community = CommunityProfile.objects.get(id=pk, members=user_id)
     except CommunityProfile.DoesNotExist:
-        return Response(data={'error': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(data={'error': 'Community not found or user is not the creator'}, status=status.HTTP_404_NOT_FOUND)
 
     serializer = CommunityProfileSerializer(community)
     return Response(data={'data': serializer.data}, status=status.HTTP_200_OK)
 
+api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_member_by_admin(request, cid):
+    auth_header = request.headers.get('Authorization')
+    admin_user_id = get_user_id_from_token(auth_header)
+
+    try:
+        community = CommunityProfile.objects.get(id=cid, members=admin_user_id)
+    except CommunityProfile.DoesNotExist:
+        return Response({'error': 'Community not found or user is not the admin'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        serializer = CommunityMembershipSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            user = serializer.validated_data.get('user')
+
+            if not CommunityMembership.objects.filter(user=user, community=community).exists():
+                membership = CommunityMembership.objects.create(
+                    user=user,
+                    community=community,
+                    is_admin=False  # Set to True if the admin wants to make the user an admin immediately
+                )
+                
+                return Response({'message': 'Member added successfully'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'error': 'User is already a member of the community'}, status=status.HTTP_400_BAD_REQUEST)
+
+        errors = serializer.errors
+        return Response(data={'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(data={'message': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
 @api_view(['POST'])

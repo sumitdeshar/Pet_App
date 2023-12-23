@@ -1,6 +1,6 @@
 // home_page.dart
 import 'package:flutter/material.dart';
-import 'package:frontend/Models/models.dart';
+import 'package:frontend/Models/owner_profile_models.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/Constants/token_auth.dart';
 import 'package:http/http.dart' as http;
@@ -75,11 +75,11 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildProfilePicture(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildUserInfo(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildPetsSection(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildPostsSection(),
           ],
         ),
@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildProfilePicture() {
-    return CircleAvatar(
+    return const CircleAvatar(
       radius: 70,
       //   backgroundImage: ownProfile.isNotEmpty
       //       ? NetworkImage(ownProfile[0].photo)
@@ -102,12 +102,12 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Text(
           'Username: ${ownProfile.isNotEmpty ? ownProfile[0].user.username : ''}',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
           'BIO: ${ownProfile.isNotEmpty ? ownProfile[0].bio : ''}',
-          style: TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16),
         ),
       ],
     );
@@ -117,11 +117,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'My Pets:',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         if (ownProfile.isNotEmpty && ownProfile[0].pets.isNotEmpty)
           ...ownProfile[0].pets.map((pet) => _buildPetSegment(pet)),
       ],
@@ -130,8 +130,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildPetSegment(Pet pet) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey)),
       ),
       child: Column(
@@ -139,19 +139,19 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           Text(
             'Pet Name: ${pet.name}',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           Text(
             'Species: ${pet.species}',
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
           Text(
             'Breed: ${pet.breed}',
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
           Text(
             'Age: ${pet.age}',
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
           // You can add more pet details as needed
         ],
@@ -163,11 +163,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Posts:',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         // Build post previews
         _buildPostPreview(
           'Fun day at the park',
@@ -186,21 +186,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _buildPostPreview(
       String postTitle, String postPreview, String imagePath) {
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey)),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             postTitle,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             postPreview,
-            style: TextStyle(fontSize: 14, color: Colors.grey),
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Image.asset(imagePath,
               height: 150, // Adjust the height as needed
               width: double.infinity,

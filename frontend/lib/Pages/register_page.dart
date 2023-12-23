@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Pages/login_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:frontend/Widgets/appbar.dart';
 import 'dart:convert';
 
 class RegistrationPage extends StatefulWidget {
@@ -15,7 +17,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       TextEditingController();
 
   Future<void> registerUser() async {
-    const String apiUrl = 'http://127.0.0.1:8000/register';
+    const String apiUrl = 'http://10.0.2.2:8000/register';
 
     final Map<String, dynamic> registrationData = {
       'username': _usernameController.text,
@@ -34,25 +36,20 @@ class _RegistrationPageState extends State<RegistrationPage> {
       print(jsonDecode(response.body));
 
       if (response.statusCode == 200) {
-        // Registration successful, navigate to login page or handle accordingly
         print('Registration successful');
-        // Navigate to login page, for example:
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
       } else {
-        // Registration failed, handle errors
         final Map<String, dynamic> responseData = jsonDecode(response.body);
 
         if (responseData.containsKey('error')) {
-          // Handle specific error message
           final String errorMessage = responseData['error'];
           print(errorMessage);
         } else {
-          // Handle other errors or unexpected responses
           print('Unexpected response: ${response.body}');
         }
       }
     } catch (e) {
-      // Handle network or other errors
       print('Error: $e');
     }
   }
@@ -60,9 +57,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Register'),
-      ),
+      appBar: customAppBar(),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(

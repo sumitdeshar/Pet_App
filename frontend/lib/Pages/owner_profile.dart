@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
-class PetOwnerProfile extends StatelessWidget {
+class PetOwnerProfile extends StatefulWidget {
+  const PetOwnerProfile({super.key});
+
+  @override
+  State<PetOwnerProfile> createState() => _PetOwnerProfileState();
+}
+
+class _PetOwnerProfileState extends State<PetOwnerProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

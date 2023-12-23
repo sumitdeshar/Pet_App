@@ -2,6 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 
 class CommunityProfile(models.Model):
     community_name = models.CharField(max_length=255)
@@ -13,6 +14,41 @@ class CommunityProfile(models.Model):
     def __str__(self):
         return self.community_name
     
+class CommunityMembership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    community = models.ForeignKey(CommunityProfile, on_delete=models.CASCADE)
+    is_admin = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.community.community_name}"
+
+    def make_user_admin(user, community):
+        try:
+            with transaction.atomic():
+                # Assuming there is only one CommunityMembership for a user and community
+                community_membership = CommunityMembership.objects.get(user=user, community=community)
+                community_membership.is_admin = True
+                community_membership.save()
+                
+                return True  # Indicates success
+        except CommunityMembership.DoesNotExist:
+            # Handle the case where there is no CommunityMembership for the user
+            return False  # Indicates failure
+
+class CommunityMembershipQuestion(models.Model):
+    question_text = models.TextField(null=True)
+    community = models.ForeignKey(CommunityProfile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.question_text
+
+class CommunityMembershipAnswer(models.Model):
+    answer_text = models.TextField(null=True)
+    question = models.ForeignKey(CommunityMembershipQuestion, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Answer by {self.user.username} to '{self.question.question_text}'"
     
 class CommunityApplication(models.Model):
     PENDING = 'Pending'
@@ -33,13 +69,6 @@ class CommunityApplication(models.Model):
     def __str__(self):
         return f"{self.full_name} - {self.status}"
 
-class CommunityMembership(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    community = models.ForeignKey(CommunityProfile, on_delete=models.CASCADE)
-    is_admin = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.community.community_name}"
 
 # Create custom permission for administering the community
 def create_custom_permission():
