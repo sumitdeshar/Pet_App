@@ -34,7 +34,8 @@ class PetOwnerProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user','pets','bio','photo']
+        fields = '__all__'
+
         
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod

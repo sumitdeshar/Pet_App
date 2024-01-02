@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'Pages/login_page.dart';
-import 'Pages/community/list_community.dart';
-import 'Pages/register_page.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
