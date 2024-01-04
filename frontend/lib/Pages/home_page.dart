@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Models/owner_profile_models.dart';
 import 'package:frontend/Pages/community/list_community.dart';
+import 'package:frontend/Pages/navigation/bottom_navigation_bar.dart';
 import 'package:frontend/Pages/posts/post_detail.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/Constants/token_auth.dart';
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(),
+      appBar: customAppBar(title: ''),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -100,6 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      bottomNavigationBar: CustomBottomNavBar(),
     );
   }
 

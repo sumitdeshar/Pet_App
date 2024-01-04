@@ -57,7 +57,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(),
+      appBar: customAppBar(title: ''),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
