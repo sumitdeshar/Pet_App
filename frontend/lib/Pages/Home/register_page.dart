@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/login_page.dart';
+import 'package:frontend/Pages/Home/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Widgets/appbar.dart';
 import 'dart:convert';
@@ -15,6 +15,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  String appBarTitle = 'Register';
 
   Future<void> registerUser() async {
     const String apiUrl = 'http://10.0.2.2:8000/register';
@@ -57,7 +58,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: ''),
+      appBar: CustomAppBar(title: appBarTitle),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(

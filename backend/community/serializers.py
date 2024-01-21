@@ -1,6 +1,6 @@
 # community/serializers.py
 from rest_framework import serializers
-from .models import *
+from community.models import *
 
 class CommunityProfileSerializer(serializers.ModelSerializer):
     class Meta:

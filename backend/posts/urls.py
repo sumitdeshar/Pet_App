@@ -4,4 +4,5 @@ from posts.views import *
 
 urlpatterns = [
     path('', display_posts, name='community-list'),
+    path('create', post_create, name='create post'),
 ]

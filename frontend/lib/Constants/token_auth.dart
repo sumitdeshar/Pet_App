@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:frontend/Pages/login_page.dart';
+import 'package:frontend/Pages/Home/login_page.dart';
 
 final storage = FlutterSecureStorage();
 

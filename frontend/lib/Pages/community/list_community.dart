@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/token_auth.dart';
 import 'package:frontend/Models/community_model.dart';
-import 'package:frontend/Pages/community/community_home.dart';
+import 'package:frontend/Pages/Community/community_home.dart';
+import 'package:frontend/Widgets/appbar.dart';
+import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -14,11 +16,11 @@ class CommunityList extends StatefulWidget {
 
 class _CommunityListState extends State<CommunityList> {
   List<CommunityDetail> communities = [];
+  String appBarTitle = 'Community List You Are Involved In';
 
   @override
   void initState() {
     super.initState();
-
     fetchCommunities();
   }
 
@@ -54,23 +56,23 @@ class _CommunityListState extends State<CommunityList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Community Management'),
-      ),
+      appBar: CustomAppBar(title: appBarTitle),
       body: ListView.builder(
         itemCount: communities.length,
         itemBuilder: (context, index) {
-          return CommunityCard(community: communities[index]);
+          return CommunityCard(community: communities[index], context: context);
         },
       ),
+      bottomNavigationBar: CustomBottomNavBar(),
     );
   }
 }
 
 class CommunityCard extends StatelessWidget {
   final CommunityDetail community;
+  final BuildContext context;
 
-  CommunityCard({required this.community});
+  CommunityCard({required this.community, required this.context});
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +83,8 @@ class CommunityCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CommunityProfilePage(
-                communityId: community.id,
-              ),
+              builder: (context) =>
+                  CommunityProfilePage(communityId: community.id),
             ),
           );
         },

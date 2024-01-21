@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/Pages/posts/new_feeds.dart';
-import 'package:frontend/Pages/register_page.dart';
+import 'package:frontend/Pages/Home/register_page.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final storage = const FlutterSecureStorage();
   bool isLoading = false;
+  String appBarTitle = 'New Feed';
 
   Future<void> storeTokens(String accessToken, String refreshToken) async {
     await storage.write(key: 'access_token', value: accessToken);
@@ -67,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: ''),
+      appBar: CustomAppBar(title: appBarTitle),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

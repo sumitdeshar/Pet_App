@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/token_auth.dart';
 import 'package:frontend/Models/community_model.dart';
+import 'package:frontend/Pages/posts/create_post.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:frontend/Widgets/appbar.dart';
@@ -55,7 +56,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: ''),
+      appBar: CustomAppBar(title: 'sd'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -64,22 +65,18 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
             _buildCommunityPicture(),
             const SizedBox(height: 16),
             _buildcommunityInfo(),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             if (communityData != null)
               for (int memberId in communityData!.members)
                 _buildMemberSegment('User $memberId'),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to the community list screen
-              },
-              child: const Text('View Community List'),
-            ),
-            Text(
+            const SizedBox(height: 16),
+            PostBox(),
+            const SizedBox(height: 16),
+            const Text(
               'Posts:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             const SizedBox(height: 16),
             _buildPost(
               'Latest Tech Trends',
@@ -104,8 +101,8 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
 
   Widget _buildcommunityInfo() {
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey)),
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -115,20 +112,106 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
           ),
           Text(
             communityData?.description ?? '',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
           )
         ]));
   }
 
   Widget _buildMemberSegment(String memberName) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey)),
       ),
       child: Text(
         memberName,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget PostBox() {
+    return GestureDetector(
+      onTap: () {
+        // Add your navigation logic
+        print(widget.communityId);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  Create_Post(communityId: communityData!.id)),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.symmetric(vertical: 10.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.blueGrey, width: 2.0),
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.grey[200],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 12.0, horizontal: 10.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey, width: 2.0),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: const Text(
+                  "What's on your mind?",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10.0),
+            ElevatedButton(
+              onPressed: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const Create_Post()),
+                // );
+              },
+              child: Text(
+                'Create Post',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.blue),
+                padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+                    vertical: 12.0, horizontal: 15.0)),
+                side: MaterialStateProperty.all(
+                  const BorderSide(
+                    width: 2.0, // Adjust border width
+                    color: Colors.blue,
+                  ),
+                ),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

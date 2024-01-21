@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/community/list_community.dart';
-import 'package:frontend/Pages/home_page.dart';
+import 'package:frontend/Pages/Community/list_community.dart';
+import 'package:frontend/Pages/Home/home_page.dart';
 import 'package:frontend/Pages/posts/new_feeds.dart';
 
 class CustomBottomNavBar extends StatelessWidget {

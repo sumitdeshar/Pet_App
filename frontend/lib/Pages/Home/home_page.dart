@@ -1,8 +1,8 @@
 // home_page.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/Models/owner_profile_models.dart';
-import 'package:frontend/Pages/community/list_community.dart';
-import 'package:frontend/Pages/navigation/bottom_navigation_bar.dart';
+import 'package:frontend/Pages/Community/list_community.dart';
+import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:frontend/Pages/posts/post_detail.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/Constants/token_auth.dart';
@@ -22,6 +22,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<PetOwnerProfile> ownProfile = [];
   bool isLoading = true;
+  String appBarTitle = 'New Feed';
 
   Future<void> _fetchProfileData() async {
     try {
@@ -72,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(title: ''),
+      appBar: CustomAppBar(title: appBarTitle),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
