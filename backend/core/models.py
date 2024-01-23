@@ -2,11 +2,12 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from cloudinary_storage.storage import MediaCloudinaryStorage
-from django.contrib.auth.base_user import AbstractBaseUser
+from core.utlis import random_id
 
 #create your models
 
 class Profile(models.Model):
+    id = models.AutoField(primary_key=True, default=random_id, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
     phone_number = models.CharField(max_length=15)
@@ -20,13 +21,11 @@ class Profile(models.Model):
         null=True,
         storage=MediaCloudinaryStorage()
     )
-
-
     def __str__(self):
         return self.user.username
 
 class Pet(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True, default=random_id, editable=False)
     name = models.CharField(max_length=100)
     species = models.CharField(max_length=50)
     breed = models.CharField(max_length=50)

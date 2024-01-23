@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/Community/list_community.dart';
+import 'package:frontend/Pages/Community/create_community.dart';
 import 'package:frontend/Pages/Home/home_page.dart';
 import 'package:frontend/Pages/posts/new_feeds.dart';
 
@@ -17,8 +17,8 @@ class CustomBottomNavBar extends StatelessWidget {
           icon: Icon(Icons.person, color: Colors.grey, size: 24.0),
         ),
         BottomNavigationBarItem(
-          label: 'Community',
-          icon: Icon(Icons.group, color: Colors.grey, size: 24.0),
+          label: 'Create',
+          icon: Icon(Icons.add_outlined, color: Colors.grey, size: 24.0),
         ),
       ],
       onTap: (int index) {
@@ -41,7 +41,8 @@ class CustomBottomNavBar extends StatelessWidget {
           case 2:
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CommunityList()),
+              MaterialPageRoute(
+                  builder: (context) => CommunityApplicationPage()),
             );
             break;
         }

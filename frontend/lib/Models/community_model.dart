@@ -14,4 +14,15 @@ class CommunityDetail {
     required this.coverPhoto,
     required this.members,
   });
+
+  factory CommunityDetail.fromJson(Map<String, dynamic> json) {
+    return CommunityDetail(
+      id: json['id'],
+      name: json['community_name'],
+      description: json['description'],
+      creationDate: json['creation_date'],
+      coverPhoto: json['cover_photo'] ?? '',
+      members: List<int>.from(json['members']),
+    );
+  }
 }

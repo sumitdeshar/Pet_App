@@ -1,5 +1,6 @@
 import jwt
 import os
+import random
 
 # utils.py
 def get_user_id_from_token(auth_header):
@@ -13,3 +14,8 @@ def get_user_id_from_token(auth_header):
         return None
     except jwt.InvalidTokenError:
         return None
+    
+def random_id():
+    return random.randint(1, 2147483647)
+
+

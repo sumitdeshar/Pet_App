@@ -1,13 +1,12 @@
 from django.db import models
+from core.utlis import random_id
 from core.models import User
-import uuid
 from community.models import CommunityProfile
-from cloudinary_storage.storage import VideoMediaCloudinaryStorage
-from cloudinary_storage.validators import validate_video
+
 
 # Create your models here.
 class Post(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True, default=random_id, editable=False)
     community = models.ForeignKey(CommunityProfile, related_name='posts', on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -22,7 +21,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True, default=random_id, editable=False)
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     parent_comment = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
     content = models.TextField()
@@ -38,6 +37,7 @@ class Comment(models.Model):
 
 
 class Upvote(models.Model):
+    id = models.AutoField(primary_key=True, default=random_id, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name='upvotes', null=True, blank=True, on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, related_name='upvotes', null=True, blank=True, on_delete=models.CASCADE)

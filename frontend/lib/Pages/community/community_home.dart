@@ -56,7 +56,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'sd'),
+      appBar: const CustomAppBar(title: 'Profile'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

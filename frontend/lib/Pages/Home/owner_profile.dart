@@ -1,6 +1,7 @@
 // home_page.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/Models/owner_profile_models.dart';
+import 'package:frontend/Pages/Community/create_community.dart';
 import 'package:frontend/Pages/Community/list_community.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:frontend/Pages/posts/post_detail.dart';
@@ -22,7 +23,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<PetOwnerProfile> ownProfile = [];
   bool isLoading = true;
-  String appBarTitle = 'New Feed';
+  String appBarTitle = 'Profile';
 
   Future<void> _fetchProfileData() async {
     try {
@@ -85,17 +86,31 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 16),
             _buildPetsSection(),
             const SizedBox(height: 16),
-            // Add the button to navigate to the community list
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to the community list screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const CommunityList()),
-                );
-              },
-              child: const Text('View Community List'),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to the community list screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CommunityList()),
+                    );
+                  },
+                  child: const Text('View Community List'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to the community list screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CommunityApplicationPage()),
+                    );
+                  },
+                  child: const Text('Add community'),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             _buildPostsSection(),
