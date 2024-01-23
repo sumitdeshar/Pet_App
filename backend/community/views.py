@@ -57,7 +57,8 @@ def create_community(request):
 @api_view(['GET'])
 def community_profile_list(request):
     communities = CommunityProfile.objects.all()
-    serializer = CommunityProfileSerializer(communities, many=True)
+    serializer = CommunityListingSerializer(communities, many=True)
+    print(serializer.data)
     return Response(data={'data': serializer.data}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])

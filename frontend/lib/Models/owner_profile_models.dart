@@ -1,6 +1,6 @@
 class PetOwnerProfile {
   final User user;
-  final List<Pet> pets;
+  final List<Pet> pets; // Change here
   final String bio;
   final String photo;
 
@@ -12,11 +12,14 @@ class PetOwnerProfile {
   });
 
   factory PetOwnerProfile.fromJson(Map<String, dynamic> json) {
+    // Adjust the pets property to be a list
+    final List<dynamic> petsJson = json['pets'];
+    final List<Pet> petsList =
+        petsJson.map((petJson) => Pet.fromJson(petJson)).toList();
+
     return PetOwnerProfile(
       user: User.fromJson(json['user']),
-      pets: (json['pets'] as List<dynamic>)
-          .map((petJson) => Pet.fromJson(petJson))
-          .toList(),
+      pets: petsList,
       bio: json['bio'],
       photo: json['photo'],
     );
@@ -24,11 +27,13 @@ class PetOwnerProfile {
 }
 
 class User {
+  final int id;
   final String username;
   final String firstName;
   final String lastName;
 
   User({
+    required this.id,
     required this.username,
     required this.firstName,
     required this.lastName,
@@ -36,6 +41,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      id: json['id'],
       username: json['username'],
       firstName: json['first_name'],
       lastName: json['last_name'],
@@ -44,19 +50,19 @@ class User {
 }
 
 class Pet {
-  final String id;
+  final int id;
   final String name;
   final String species;
   final String breed;
-  final int age;
-  final String? petphoto; // Assuming it can be null
+  final int? age;
+  final String? petphoto;
 
   Pet({
     required this.id,
     required this.name,
     required this.species,
     required this.breed,
-    required this.age,
+    this.age,
     this.petphoto,
   });
 

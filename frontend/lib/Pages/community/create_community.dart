@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/token_auth.dart';
+import 'package:frontend/Widgets/appbar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -15,6 +16,7 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
   final TextEditingController _communityDescriptionController =
       TextEditingController();
   bool _acceptedRules = false;
+  var appBarTitle = 'Register Community';
 
   Future<void> submitCommunityApplication() async {
     final Map<String, dynamic> requestData = {
@@ -35,10 +37,45 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
 
       if (response.statusCode == 200) {
         print('Community application successful!');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.thumb_up_outlined),
+                SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: Text('Community application successful!'),
+                ),
+              ],
+            ),
+            duration: Duration(seconds: 5),
+          ),
+        );
       } else {
         print(
             'Community application failed with status code: ${response.statusCode}');
         print('Response body: ${response.body}');
+
+        try {
+          final Map<String, dynamic> errorData = jsonDecode(response.body);
+          final errorMessage = errorData['error'] ?? 'Unknown error';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        } catch (error) {
+          print('Error decoding JSON or extracting error message: $error');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed!'),
+              duration: Duration(seconds: 5),
+            ),
+          );
+        }
       }
     } catch (error) {
       print('Error during community application: $error');
@@ -52,10 +89,7 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
         primaryColor: Colors.blue,
       ),
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Create Community'),
-          backgroundColor: Colors.blueAccent,
-        ),
+        appBar: CustomAppBar(title: appBarTitle),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(

@@ -16,7 +16,7 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username","first_name","last_name"]
+        fields = ["id","username","first_name","last_name"]
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,7 +34,7 @@ class PetOwnerProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = '__all__'
+        fields = ['user','bio', 'photo', 'cover_photo', 'dob', 'pets']
 
         
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

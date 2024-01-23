@@ -7,7 +7,7 @@ from core.utlis import random_id
 #create your models
 
 class Profile(models.Model):
-    id = models.AutoField(primary_key=True, default=random_id, editable=False)
+    profile_id = models.AutoField(primary_key=True, default=random_id, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True)
     phone_number = models.CharField(max_length=15)
@@ -30,8 +30,8 @@ class Pet(models.Model):
     species = models.CharField(max_length=50)
     breed = models.CharField(max_length=50)
     age = models.PositiveIntegerField()
-    owner = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='pets')
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='pets')
     petphoto = models.ImageField(upload_to='pet_photos/', blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.name+ " owned by "+ self.owner.user.username

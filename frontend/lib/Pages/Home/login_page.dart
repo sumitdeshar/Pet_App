@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/Constants/token_auth.dart';
 import 'package:frontend/Pages/posts/new_feeds.dart';
 import 'package:frontend/Pages/Home/register_page.dart';
 import 'package:frontend/Widgets/appbar.dart';
@@ -32,33 +33,36 @@ class _LoginPageState extends State<LoginPage> {
 
   LoginAuth() async {
     try {
-      final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/login'),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: {
-          'username': _usernameController.text,
-          'password': _passwordController.text,
-        },
-      );
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final String accessToken = responseData['access'];
-        final String refreshToken = responseData['refresh'];
+      final String? accessToken = await getAccessToken();
 
-        // Store both tokens securely
-        await storeTokens(accessToken, refreshToken);
-
-        print(
-            'Login successful. Access Token: $accessToken, Refresh Token: $refreshToken');
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => NewsFeed()), //title: 'Owner Profile',
-          //title: 'Pet App'
+      if (accessToken != null) {
+        final response = await http.post(
+          Uri.parse('http://10.0.2.2:8000/login'),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: {
+            'username': _usernameController.text,
+            'password': _passwordController.text,
+          },
         );
+        if (response.statusCode == 200) {
+          final Map<String, dynamic> responseData = jsonDecode(response.body);
+          final String accessToken = responseData['access'];
+          final String refreshToken = responseData['refresh'];
+          await storeTokens(accessToken, refreshToken);
+
+          print(
+              'Login successful. Access Token: $accessToken, Refresh Token: $refreshToken');
+          // ignore: use_build_context_synchronously
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NewsFeed()), //title: 'Owner Profile',
+            //title: 'Pet App'
+          );
+        }
       }
     } catch (e) {
       print('Error: $e');
@@ -84,8 +88,8 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Password'),
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Create an Account',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
@@ -96,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                   MaterialPageRoute(builder: (context) => RegistrationPage()),
                 );
               },
-              child: Text(
+              child: const Text(
                 'New to the community? Create an account',
                 style: TextStyle(
                     fontSize: 14,
@@ -107,6 +111,12 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Loading!'),
+                    duration: Duration(seconds: 3),
+                  ),
+                );
                 LoginAuth();
               },
               child: const Text('Login'),

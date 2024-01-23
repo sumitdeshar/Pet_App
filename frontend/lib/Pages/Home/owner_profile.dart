@@ -1,7 +1,6 @@
 // home_page.dart
 import 'package:flutter/material.dart';
 import 'package:frontend/Models/owner_profile_models.dart';
-import 'package:frontend/Pages/Community/create_community.dart';
 import 'package:frontend/Pages/Community/list_community.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:frontend/Pages/posts/post_detail.dart';
@@ -23,7 +22,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<PetOwnerProfile> ownProfile = [];
   bool isLoading = true;
-  String appBarTitle = 'Profile';
+  String appBarTitle = 'New Feed';
 
   Future<void> _fetchProfileData() async {
     try {
@@ -86,31 +85,15 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 16),
             _buildPetsSection(),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the community list screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CommunityList()),
-                    );
-                  },
-                  child: const Text('View Community List'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the community list screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CommunityApplicationPage()),
-                    );
-                  },
-                  child: const Text('Add community'),
-                ),
-              ],
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CommunityList()),
+                );
+              },
+              child: const Text('View Community List'),
             ),
             const SizedBox(height: 16),
             _buildPostsSection(),
@@ -190,7 +173,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildPetPicture(imgpath) {
-    return _buildPostImage(imgpath);
+    if (imgpath != null && imgpath is String) {
+      return _buildPostImage(imgpath);
+    } else {
+      return Container();
+    }
   }
 
   Widget _buildPostsSection() {
