@@ -43,8 +43,6 @@ class _Create_PostState extends State<Create_Post> {
         print('Base64 Image: $base64Image');
 
         int communityId = await widget.communityId;
-
-        // Generate a dynamic filename (for example, using current timestamp)
         String dynamicFileName =
             'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
@@ -61,6 +59,7 @@ class _Create_PostState extends State<Create_Post> {
           ));
 
         var response = await http.Response.fromStream(await request.send());
+        print('Server response: ${response.statusCode}, ${response.body}');
 
         if (response.statusCode == 200) {
           dynamic responseData = jsonDecode(response.body);

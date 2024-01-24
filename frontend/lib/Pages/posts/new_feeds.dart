@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Constants/token_auth.dart';
+import 'package:frontend/Models/post_model.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
-import 'package:frontend/Pages/posts/create_post.dart';
 import 'package:frontend/Widgets/appbar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class NewsFeed extends StatefulWidget {
   @override
@@ -9,8 +13,51 @@ class NewsFeed extends StatefulWidget {
 }
 
 class _NewsFeedState extends State<NewsFeed> {
-  TextEditingController postTextController = TextEditingController();
-  String appBarTitle = 'New Feed';
+  List<PostModel> posts = [];
+  bool isLoading = true;
+  String appBarTitle = 'New Feeds';
+
+  Future<void> fetchPosts() async {
+    try {
+      const String baseUrl = "http://10.0.2.2:8000/posts/";
+      final String? accessToken = await getAccessToken();
+
+      if (accessToken != null) {
+        var response = await http.get(
+          Uri.parse(baseUrl),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          List<dynamic> responseData = jsonDecode(response.body);
+          print(responseData);
+
+          posts = responseData.map((jsonpost) {
+            return PostModel.fromJson(jsonpost);
+          }).toList();
+
+          setState(() {
+            isLoading = false;
+          });
+        } else {
+          throw Future.error('Failed to load posts: ${response.statusCode}');
+        }
+      } else {
+        print('Access token is null');
+      }
+    } catch (e) {
+      print('Error fetching posts: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPosts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +68,10 @@ class _NewsFeedState extends State<NewsFeed> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PostBox(),
+            const Text(
+              'Posted by',
+              style: TextStyle(color: Colors.grey),
+            ),
             const SizedBox(height: 16),
             viewPosts(),
             const SizedBox(height: 16),
@@ -32,90 +82,94 @@ class _NewsFeedState extends State<NewsFeed> {
     );
   }
 
-  Widget PostBox() {
-    return GestureDetector(
-      onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const Create_Post()),
-        // );
+  Widget viewPosts() {
+    return ListView.builder(
+      itemCount: posts.length,
+      itemBuilder: (context, index) {
+        PostModel post = posts[index];
+
+        return Card(
+          margin: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      post.description,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Posted by ${post.author.isNotEmpty ? post.author.first.username : ''}',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildPostImage(post.imageUrl),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildActionButton(
+                            icon: Icons.thumb_up, label: 'Upvote'),
+                        _buildActionButton(
+                            icon: Icons.comment, label: 'Comment'),
+                        _buildActionButton(icon: Icons.share, label: 'Share'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
       },
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        margin: const EdgeInsets.symmetric(vertical: 10.0),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blueGrey, width: 2.0),
-          borderRadius: BorderRadius.circular(10.0),
-          color: Colors.grey[200],
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.25), // Color of the shadow
-              spreadRadius: 2, // Spread radius
-              blurRadius: 5, // Blur radius
-              offset: const Offset(0, 3), // Changes position of shadow
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 12.0, horizontal: 10.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey, width: 2.0),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: const Text(
-                  "What's on your mind?",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10.0),
-            ElevatedButton(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const Create_Post()),
-                // );
-              },
-              child: Text(
-                'Create Post',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-                padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
-                    vertical: 12.0, horizontal: 15.0)),
-                side: MaterialStateProperty.all(
-                  const BorderSide(
-                    width: 2.0, // Adjust border width
-                    color: Colors.blue,
-                  ),
-                ),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(10.0), // Adjust border radius
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
-  Widget viewPosts() {
-    return Container();
+  Widget _buildActionButton({required IconData icon, required String label}) {
+    return Column(
+      children: [
+        Icon(icon),
+        const SizedBox(height: 4),
+        Text(label),
+      ],
+    );
+  }
+
+  Widget _buildPostImage(String imagePath) {
+    if (imagePath.startsWith('http')) {
+      // Network image
+      return CachedNetworkImage(
+        imageUrl: imagePath,
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+        height: 150, // Adjust the height as needed
+        width: double.infinity,
+        fit: BoxFit.cover,
+      );
+    } else if (imagePath.startsWith('images')) {
+      // Local asset image
+      return Image.asset(
+        imagePath,
+        height: 150, // Adjust the height as needed
+        width: double.infinity,
+        fit: BoxFit.cover,
+      );
+    } else {
+      // Placeholder or error widget for unsupported image sources
+      return Container(
+        color: Colors.grey,
+        height: 150,
+        width: double.infinity,
+        child: const Center(
+          child: Text('Unsupported image source'),
+        ),
+      );
+    }
   }
 }

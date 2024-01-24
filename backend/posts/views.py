@@ -11,31 +11,28 @@ from posts.serializers import *
 from core.utlis import get_user_id_from_token
 
 
-
 @api_view(['GET'])
 def display_posts(request):
-    # if request.method == 'GET':
-    #     posts = Post.objects.all()
-    #     serializer = PostSerializer(posts, many=True)
-    #     return Response(serializer.data)
-    post = get_object_or_404(Post)
-    serializer = ViewPostSerializer(post)
-    print(serializer.data)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        latest_posts = Post.objects.all().order_by('-created_at')[:5]
+        serializer = ViewPostSerializer(latest_posts, many=True)
+        print(serializer.data)
+        return Response(serializer.data)
 
 @api_view(['GET', 'POST'])
 def post_create(request):
 
     auth_header = request.headers.get('Authorization')
     user_id = get_user_id_from_token(auth_header)
+    print(user_id)
     # user_id = 1
     if user_id is None:
         return Response({'error': 'Invalid or expired token'}, status=status.HTTP_401_UNAUTHORIZED)
-    
+    user_queryset = User.objects.get(id=user_id) 
     if request.method == 'POST':
         serializer = CreatePostSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(author=user_id)
+            serializer.save(author=user_queryset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

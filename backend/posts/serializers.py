@@ -7,7 +7,7 @@ class CommunityIDSerializer(serializers.ModelSerializer):
         fields = ('id') 
 
 class CreatePostSerializer(serializers.ModelSerializer):
-    community = CommunityIDSerializer()
+    # community = CommunityIDSerializer()
     class Meta:
         model = Post
         fields = ['community', 'content', 'photo']
@@ -17,13 +17,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username' ) 
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User 
+        fields = ('id', 'username',) 
+
 class ViewPostSerializer(serializers.ModelSerializer):
-    community = CommunityIDSerializer()
-    author  = UserProfileSerializer()
+    community_id = serializers.IntegerField(source='community.id')
+    author = UserProfileSerializer(many=False)
 
     class Meta:
         model = Post
-        fields = ('community', 'id', 'author', 'created_at', 'content', 'photo')
+        fields = ('community_id', 'id', 'author', 'created_at', 'content', 'photo')
+
+
         
 class EditPostSerializer(serializers.ModelSerializer):
     class Meta:
