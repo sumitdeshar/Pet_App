@@ -6,7 +6,6 @@ import 'package:frontend/Pages/Home/register_page.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-// import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final storage = const FlutterSecureStorage();
   bool isLoading = false;
-  String appBarTitle = 'New Feed';
+  String appBarTitle = 'Pet App';
 
   Future<void> storeTokens(String accessToken, String refreshToken) async {
     await storage.write(key: 'access_token', value: accessToken);
@@ -55,7 +54,6 @@ class _LoginPageState extends State<LoginPage> {
 
           print(
               'Login successful. Access Token: $accessToken, Refresh Token: $refreshToken');
-          // ignore: use_build_context_synchronously
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
