@@ -27,9 +27,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'cloudinary_storage',
     'cloudinary',
+    'import_export',
     'core',
     'community',
     'posts',
+    'products',
 ]
 
 

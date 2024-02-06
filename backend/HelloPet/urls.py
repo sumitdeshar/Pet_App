@@ -28,6 +28,7 @@ urlpatterns = [
     path('', include('core.urls')),
     path('community/', include('community.urls')),
     path('posts/', include('posts.urls')),
+    path('products/', include('products.urls')),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
