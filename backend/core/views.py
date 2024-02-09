@@ -17,11 +17,10 @@ from .serializers import *
 
 
 # Create your views here.
-def index(request):
-    return render(request, 'index.html')
+# def index(request):
+#     return render(request, 'index.html')
 
 
-    
 @api_view(['GET'])
 def check_user(request, pk):
     try:

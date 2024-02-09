@@ -34,7 +34,7 @@ class PetOwnerProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user','bio', 'photo', 'cover_photo', 'dob', 'pets']
+        fields = ['user', 'bio', 'photo', 'followers', 'following', 'cover_photo', 'dob', 'pets']
 
         
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

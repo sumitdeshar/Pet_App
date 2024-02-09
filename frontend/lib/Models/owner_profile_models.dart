@@ -1,27 +1,42 @@
 class PetOwnerProfile {
   final User user;
-  final List<Pet> pets; // Change here
+  final List<Pet> pets;
   final String bio;
   final String photo;
+  final List<User> followers;
+  final List<User> following;
 
   PetOwnerProfile({
     required this.user,
     required this.pets,
     required this.bio,
     required this.photo,
+    required this.followers,
+    required this.following,
   });
 
   factory PetOwnerProfile.fromJson(Map<String, dynamic> json) {
-    // Adjust the pets property to be a list
     final List<dynamic> petsJson = json['pets'];
     final List<Pet> petsList =
         petsJson.map((petJson) => Pet.fromJson(petJson)).toList();
+
+    final List<dynamic> followersJson = json['followers'];
+    final List<User> followersList = followersJson
+        .map((followerJson) => User.fromJson(followerJson))
+        .toList();
+
+    final List<dynamic> followingJson = json['following'];
+    final List<User> followingList = followingJson
+        .map((followingJson) => User.fromJson(followingJson))
+        .toList();
 
     return PetOwnerProfile(
       user: User.fromJson(json['user']),
       pets: petsList,
       bio: json['bio'],
       photo: json['photo'],
+      followers: followersList,
+      following: followingList,
     );
   }
 }

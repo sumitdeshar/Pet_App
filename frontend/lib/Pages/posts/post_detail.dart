@@ -1,5 +1,6 @@
 // PostDetailScreen.dart
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PostDetailScreen extends StatelessWidget {
@@ -34,15 +35,40 @@ class PostDetailScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18, color: Colors.black87),
             ),
             SizedBox(height: 16),
-            Image.asset(
-              imagePath,
-              height: 200, // Adjust the height as needed
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+            _buildPostImage(imagePath),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildPostImage(String imagePath) {
+    if (imagePath.startsWith('http')) {
+      return AspectRatio(
+        aspectRatio: 9 / 10,
+        child: CachedNetworkImage(
+          imageUrl: imagePath,
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+          fit: BoxFit.fill,
+        ),
+      );
+    } else if (imagePath.startsWith('images')) {
+      // Local asset image
+      return AspectRatio(
+        aspectRatio: 9 / 10,
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.fill,
+        ),
+      );
+    } else {
+      return Container(
+        color: Colors.grey,
+        child: const Center(
+          child: Text('Unsupported image source'),
+        ),
+      );
+    }
   }
 }

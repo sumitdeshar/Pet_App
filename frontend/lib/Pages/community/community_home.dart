@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/token_auth.dart';
 import 'package:frontend/Models/community_model.dart';
+import 'package:frontend/Models/post_model.dart';
 import 'package:frontend/Pages/posts/create_post.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -19,11 +20,15 @@ class CommunityProfilePage extends StatefulWidget {
 
 class _CommunityProfilePageState extends State<CommunityProfilePage> {
   CommunityDetail? communityData;
-
+  bool isLoading = true;
+  late String community;
+  String appBarTitle = '';
+  List<PostModel> posts = [];
   @override
   void initState() {
     super.initState();
     fetchCommunity();
+    fetchPosts();
   }
 
   Future<void> fetchCommunity() async {
@@ -36,21 +41,53 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
     );
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body)['data'];
-      print(data);
-      setState(() {
-        communityData = CommunityDetail(
-          id: data['id'],
-          name: data['community_name'],
-          description: data['description'],
-          creationDate: data['creation_date'],
-          coverPhoto: data['cover_photo'] ?? '',
-          members: List<int>.from(data['members']),
-        );
-      });
+      dynamic responseData = json.decode(response.body)['data'];
+      print(responseData);
+
+      communityData = CommunityDetail.fromJson(responseData);
+
+      appBarTitle = "${communityData?.name}'s Profile";
+
+      setState(() {});
     } else {
       // Handle error
       print('Failed to fetch community: ${response.statusCode}');
+    }
+  }
+
+  Future<void> fetchPosts() async {
+    try {
+      const String baseUrl = "http://10.0.2.2:8000/posts/";
+      final String? accessToken = await getAccessToken();
+
+      if (accessToken != null) {
+        var response = await http.get(
+          Uri.parse(baseUrl),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          List<dynamic> responseData = jsonDecode(response.body);
+          print(responseData);
+
+          posts = responseData.map((jsonpost) {
+            return PostModel.fromJson(jsonpost);
+          }).toList();
+
+          setState(() {
+            isLoading = false;
+          });
+        } else {
+          throw Future.error('Failed to load posts: ${response.statusCode}');
+        }
+      } else {
+        print('Access token is null');
+      }
+    } catch (e) {
+      print('Error fetching posts: $e');
     }
   }
 
@@ -64,7 +101,25 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
           children: [
             _buildCommunityPicture(),
             const SizedBox(height: 16),
-            _buildcommunityInfo(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildcommunityInfo(),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      Icon(Icons.add),
+                      const SizedBox(width: 4),
+                      Text('Join'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text('Members:'),
             const SizedBox(height: 8),
             if (communityData != null)
               for (int memberId in communityData!.members)
@@ -78,16 +133,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
             ),
             const SizedBox(height: 8),
             const SizedBox(height: 16),
-            _buildPost(
-              'Latest Tech Trends',
-              'Exploring the advancements in AI and machine learning.',
-              'images/101.jpg',
-            ),
-            _buildPost(
-              'Programming Tips',
-              'Sharing useful tips for efficient coding practices.',
-              'images/101.jpg',
-            ),
+            _buildPostsSection(posts),
           ],
         ),
       ),
@@ -216,7 +262,35 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
     );
   }
 
-  Widget _buildPost(String postTitle, String postContent, String imagePath) {
+  Widget _buildPostsSection(List<PostModel> posts) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Posts:',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        for (var post in posts)
+          _buildPost(
+            post.description,
+            post.createdAt,
+            post.imageUrl,
+            post.author.isNotEmpty ? post.author[0].username : '',
+          ),
+      ],
+    );
+  }
+
+  Widget _buildPost(
+    String postTitle,
+    DateTime createdAt,
+    String imagePath,
+    String author,
+  ) {
+    String formattedDate =
+        "${createdAt.year}-${createdAt.month}-${createdAt.day}";
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: const BoxDecoration(
@@ -226,15 +300,23 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            author,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const SizedBox(height: 4),
+          Text(
+            formattedDate,
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+          Text(
             postTitle,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 4),
-          Text(
-            postContent,
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          const SizedBox(height: 8),
+          // const SizedBox(height: 8),
           _buildPostImage(imagePath),
         ],
       ),
@@ -243,29 +325,27 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
 
   Widget _buildPostImage(String imagePath) {
     if (imagePath.startsWith('http')) {
-      // Network image
-      return CachedNetworkImage(
-        imageUrl: imagePath,
-        placeholder: (context, url) => CircularProgressIndicator(),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-        height: 150, // Adjust the height as needed
-        width: double.infinity,
-        fit: BoxFit.cover,
+      return AspectRatio(
+        aspectRatio: 16 / 10,
+        child: CachedNetworkImage(
+          imageUrl: imagePath,
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+          fit: BoxFit.fill,
+        ),
       );
     } else if (imagePath.startsWith('images')) {
       // Local asset image
-      return Image.asset(
-        imagePath,
-        height: 150, // Adjust the height as needed
-        width: double.infinity,
-        fit: BoxFit.cover,
+      return AspectRatio(
+        aspectRatio: 16 / 10,
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.fill,
+        ),
       );
     } else {
-      // Placeholder or error widget for unsupported image sources
       return Container(
         color: Colors.grey,
-        height: 150,
-        width: double.infinity,
         child: const Center(
           child: Text('Unsupported image source'),
         ),

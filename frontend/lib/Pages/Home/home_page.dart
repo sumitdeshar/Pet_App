@@ -9,6 +9,7 @@ import 'package:frontend/Constants/token_auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:frontend/Models/post_model.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -22,7 +23,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<PetOwnerProfile> ownProfile = [];
   bool isLoading = true;
-  String appBarTitle = 'New Feed';
+  late String user;
+  String appBarTitle = '';
+  List<PostModel> posts = [];
 
   Future<void> _fetchProfileData() async {
     try {
@@ -50,6 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
               PetOwnerProfile.fromJson(responseData),
             ];
           }
+
+          user = ownProfile.isNotEmpty ? ownProfile[0].user.username : '';
+          appBarTitle = "$user's Profile";
+
           setState(() {
             isLoading = false;
           });
@@ -64,10 +71,47 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> fetchPosts() async {
+    try {
+      const String baseUrl = "http://10.0.2.2:8000/posts/";
+      final String? accessToken = await getAccessToken();
+
+      if (accessToken != null) {
+        var response = await http.get(
+          Uri.parse(baseUrl),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          List<dynamic> responseData = jsonDecode(response.body);
+          print(responseData);
+
+          posts = responseData.map((jsonpost) {
+            return PostModel.fromJson(jsonpost);
+          }).toList();
+
+          setState(() {
+            isLoading = false;
+          });
+        } else {
+          throw Future.error('Failed to load posts: ${response.statusCode}');
+        }
+      } else {
+        print('Access token is null');
+      }
+    } catch (e) {
+      print('Error fetching posts: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _fetchProfileData();
+    fetchPosts();
   }
 
   @override
@@ -83,12 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 16),
             _buildUserInfo(),
             const SizedBox(height: 16),
+            _FollowSection(),
+            const SizedBox(height: 16),
             _buildPetsSection(),
             const SizedBox(height: 16),
-            // Add the button to navigate to the community list
             ElevatedButton(
               onPressed: () {
-                // Navigate to the community list screen
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -98,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('View Community List'),
             ),
             const SizedBox(height: 16),
-            _buildPostsSection(),
+            _buildPostsSection(posts),
           ],
         ),
       ),
@@ -111,17 +155,80 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildUserInfo() {
-    return Column(
+    // Extract the first profile (if available)
+    final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (profile != null)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${profile.user.firstName}',
+                    style: const TextStyle(
+                        fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    ' ',
+                    style: const TextStyle(
+                        fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '${profile.user.lastName}',
+                    style: const TextStyle(
+                        fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Text(
+                '${profile.user.username}',
+                style:
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${profile.bio}',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ElevatedButton(
+          onPressed: () {},
+          child: const Row(
+            children: [
+              Icon(Icons.add),
+              SizedBox(width: 6),
+              Text('Follow'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _FollowSection() {
+    final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text('Following'),
         Text(
-          'Username: ${ownProfile.isNotEmpty ? ownProfile[0].user.username : ''}',
+          '${profile != null ? profile.following.length : 0}',
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 8),
+        Text('Followers'),
         Text(
-          'BIO: ${ownProfile.isNotEmpty ? ownProfile[0].bio : ''}',
-          style: const TextStyle(fontSize: 16),
+          '${profile != null ? profile.followers.length : 0}',
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -178,7 +285,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return _buildPostImage(imgpath);
   }
 
-  Widget _buildPostsSection() {
+  Widget _buildPostsSection(List<PostModel> posts) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -187,56 +294,41 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        // Build post previews with GestureDetector for tapping
-        GestureDetector(
-          onTap: () {
-            // Navigate to the full post view
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PostDetailScreen(
-                  postTitle: 'Fun day at the park',
-                  postContent:
-                      'Enjoyed a lovely day outdoors with my furry friend! 🐾',
-                  imagePath:
-                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
+        for (var post in posts)
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PostDetailScreen(
+                    postTitle: post.description,
+                    postContent:
+                        "${post.createdAt.year}-${post.createdAt.month}-${post.createdAt.day}",
+                    imagePath: post.imageUrl,
+                  ),
                 ),
-              ),
-            );
-          },
-          child: _buildPostPreview(
-            'Fun day at the park',
-            'Enjoyed a lovely day outdoors with my furry friend! 🐾',
-            'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
+              );
+            },
+            child: _buildPostPreview(
+              post.description,
+              post.createdAt,
+              post.imageUrl,
+              post.author[0].username,
+            ),
           ),
-        ),
-        GestureDetector(
-          onTap: () {
-            // Navigate to the full post view
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PostDetailScreen(
-                  postTitle: 'Pet grooming tips',
-                  postContent:
-                      'Sharing some tips for keeping your pets well-groomed. 🛁',
-                  imagePath: 'images/101.jpg',
-                ),
-              ),
-            );
-          },
-          child: _buildPostPreview(
-            'Pet grooming tips',
-            'Sharing some tips for keeping your pets well-groomed. 🛁',
-            'images/101.jpg',
-          ),
-        ),
       ],
     );
   }
 
   Widget _buildPostPreview(
-      String postTitle, String postPreview, String imagePath) {
+    String postTitle,
+    DateTime createdAt,
+    String imagePath,
+    String author,
+  ) {
+    String formattedDate =
+        "${createdAt.year}-${createdAt.month}-${createdAt.day}";
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: const BoxDecoration(
@@ -251,7 +343,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           const SizedBox(height: 4),
           Text(
-            postPreview,
+            formattedDate,
             style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
           const SizedBox(height: 8),
@@ -263,29 +355,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildPostImage(String imagePath) {
     if (imagePath.startsWith('http')) {
-      // Network image
-      return CachedNetworkImage(
-        imageUrl: imagePath,
-        placeholder: (context, url) => CircularProgressIndicator(),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-        height: 150, // Adjust the height as needed
-        width: double.infinity,
-        fit: BoxFit.cover,
+      return AspectRatio(
+        aspectRatio: 9 / 10,
+        child: CachedNetworkImage(
+          imageUrl: imagePath,
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+          fit: BoxFit.fill,
+        ),
       );
     } else if (imagePath.startsWith('images')) {
       // Local asset image
-      return Image.asset(
-        imagePath,
-        height: 150, // Adjust the height as needed
-        width: double.infinity,
-        fit: BoxFit.cover,
+      return AspectRatio(
+        aspectRatio: 9 / 10,
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.fill,
+        ),
       );
     } else {
-      // Placeholder or error widget for unsupported image sources
       return Container(
         color: Colors.grey,
-        height: 150,
-        width: double.infinity,
         child: const Center(
           child: Text('Unsupported image source'),
         ),

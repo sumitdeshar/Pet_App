@@ -14,6 +14,8 @@ class Profile(models.Model):
     address = models.TextField()
     dob = models.DateField(auto_now_add=True)
     pet_info = models.ManyToManyField('Pet', blank=True)
+    followers = models.ManyToManyField(User, related_name='following', blank=True)
+    following = models.ManyToManyField(User, related_name='followers', blank=True)
     photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
     cover_photo = models.ImageField(
         upload_to='profile_covers/',

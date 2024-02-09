@@ -17,6 +17,36 @@ class _NewsFeedState extends State<NewsFeed> {
   bool isLoading = true;
   String appBarTitle = 'New Feeds';
 
+  Future<void> _handleUpvote(int postId) async {
+    try {
+      const String baseUrl = "http://10.0.2.2:8000/posts/";
+      final String? accessToken = await getAccessToken();
+
+      if (accessToken != null) {
+        var response = await http.post(
+          Uri.parse('$baseUrl/upvote/$postId'),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        );
+
+        if (response.statusCode == 201) {
+          print('Upvoted successfully');
+        } else if (response.statusCode == 400 &&
+            response.body.contains('Already upvoted')) {
+          print('Already upvoted');
+        } else {
+          throw Future.error('Failed to upvote post: ${response.statusCode}');
+        }
+      } else {
+        print('Access token is null');
+      }
+    } catch (e) {
+      print('Error during upvote: $e');
+    }
+  }
+
   Future<void> fetchPosts() async {
     try {
       const String baseUrl = "http://10.0.2.2:8000/posts/";
@@ -124,15 +154,28 @@ class _NewsFeedState extends State<NewsFeed> {
                   'Posted by ${post.author.isNotEmpty ? post.author.first.username : ''}',
                   style: const TextStyle(color: Colors.black),
                 ),
+                Text('${post.id}'),
                 const SizedBox(height: 16),
                 _buildPostImage(post.imageUrl),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildActionButton(icon: Icons.thumb_up, label: 'Upvote'),
-                    _buildActionButton(icon: Icons.comment, label: 'Comment'),
-                    _buildActionButton(icon: Icons.share, label: 'Share'),
+                    _buildActionButton(
+                      icon: Icons.thumb_up,
+                      label: 'Upvote',
+                      onTap: () {
+                        _handleUpvote(post.id);
+                      },
+                    ),
+                    _buildActionButton(
+                      icon: Icons.comment,
+                      label: 'Comment',
+                      onTap: () {
+                        // Implement the comment action
+                        // _handleComment(post.id);
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -143,13 +186,20 @@ class _NewsFeedState extends State<NewsFeed> {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label}) {
-    return Column(
-      children: [
-        Icon(icon),
-        const SizedBox(height: 4),
-        Text(label),
-      ],
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required Function() onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Icon(icon),
+          const SizedBox(height: 4),
+          Text(label),
+        ],
+      ),
     );
   }
 
@@ -162,19 +212,23 @@ class _NewsFeedState extends State<NewsFeed> {
 
   Widget _buildImage(String imagePath) {
     if (imagePath.startsWith('http')) {
-      // Network image
-      return CachedNetworkImage(
-        imageUrl: imagePath,
-        placeholder: (context, url) => CircularProgressIndicator(),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-        height: 150,
-        width: double.infinity,
-        fit: BoxFit.cover,
+      return AspectRatio(
+        aspectRatio: 16 / 10,
+        child: CachedNetworkImage(
+          imageUrl: imagePath,
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+          fit: BoxFit.fill,
+        ),
       );
     } else if (imagePath.startsWith('images')) {
-      return Image.asset(
-        imagePath,
-        fit: BoxFit.cover,
+      // Local asset image
+      return AspectRatio(
+        aspectRatio: 16 / 10,
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.fill,
+        ),
       );
     } else {
       return Container(

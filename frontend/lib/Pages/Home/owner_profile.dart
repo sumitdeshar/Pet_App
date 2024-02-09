@@ -83,6 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 16),
             _buildUserInfo(),
             const SizedBox(height: 16),
+            _FollowSection(),
+            const SizedBox(height: 16),
             _buildPetsSection(),
             const SizedBox(height: 16),
             ElevatedButton(
@@ -109,17 +111,61 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildUserInfo() {
-    return Column(
+    // Extract the first profile (if available)
+    final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (profile != null)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${profile.user.username}',
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${profile.bio}',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ElevatedButton(
+          onPressed: () {
+            // Handle follow button pressed
+          },
+          child: Row(
+            children: [
+              Icon(Icons.add),
+              const SizedBox(width: 6),
+              Text('Follow'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _FollowSection() {
+    final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text('Following'),
         Text(
-          'Username: ${ownProfile.isNotEmpty ? ownProfile[0].user.username : ''}',
+          '${profile != null ? profile.following.length : 0}',
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 8),
+        Text('Followers'),
         Text(
-          'BIO: ${ownProfile.isNotEmpty ? ownProfile[0].bio : ''}',
-          style: const TextStyle(fontSize: 16),
+          '${profile != null ? profile.followers.length : 0}',
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -166,7 +212,6 @@ class _MyHomePageState extends State<MyHomePage> {
             'Age: ${pet.age}',
             style: const TextStyle(fontSize: 16),
           ),
-          // You can add more pet details as needed
         ],
       ),
     );
@@ -278,12 +323,11 @@ class _MyHomePageState extends State<MyHomePage> {
       // Local asset image
       return Image.asset(
         imagePath,
-        height: 150, // Adjust the height as needed
+        height: 150,
         width: double.infinity,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
       );
     } else {
-      // Placeholder or error widget for unsupported image sources
       return Container(
         color: Colors.grey,
         height: 150,

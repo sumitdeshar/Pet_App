@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/Pages/posts/new_feeds.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:frontend/Pages/Home/login_page.dart';
@@ -14,12 +15,51 @@ class TokenVerification extends StatefulWidget {
 }
 
 class _TokenVerificationState extends State<TokenVerification> {
+  // ... existing code ...
+
+  @override
+  void initState() {
+    super.initState();
+    checkAccessToken();
+  }
+
+  Future<void> autoLogin(String accessToken) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/login'), // Adjust the URL as needed
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Successfully logged in using the stored token
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => NewsFeed()),
+        );
+      } else {
+        // Handle unsuccessful login, e.g., token might be invalid
+        print('Auto login failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle login request errors
+      print('Error during auto login: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+
   Future<void> checkAccessToken() async {
     final String? accessToken = await getAccessToken();
 
     if (accessToken == null) {
       // No access token, navigate to login
-      print('NULL');
+      // print('NULL');
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
     } else {
@@ -27,24 +67,21 @@ class _TokenVerificationState extends State<TokenVerification> {
       final bool isTokenExpired = await isAccessTokenExpired(accessToken);
 
       if (isTokenExpired) {
-        // Token expired, try refreshing
         await refreshAccessToken();
 
         // Check again after refresh
         final String? newAccessToken = await getAccessToken();
         if (newAccessToken == null) {
-          // Refresh failed, navigate to login
-          print('NULL2');
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => LoginPage()));
+        } else {
+          await autoLogin(newAccessToken);
         }
+      } else {
+        // Token is valid
+        await autoLogin(accessToken);
       }
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
 
