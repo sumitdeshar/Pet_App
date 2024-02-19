@@ -8,10 +8,10 @@ from cloudinary_storage.storage import MediaCloudinaryStorage
 from core.utlis import random_id
 
 class CommunityProfile(models.Model):
-    id = models.AutoField(primary_key=True, default=random_id, editable=False)
+    id = models.AutoField(primary_key=True)
     community_name = models.CharField(max_length=255)
     description = models.TextField()
-    members = models.ManyToManyField(User, through='CommunityMembership')
+    members = models.ManyToManyField(User, through='CommunityMembership', blank=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     photo = models.ImageField(
         upload_to='community_profile_photos/',
@@ -30,7 +30,7 @@ class CommunityProfile(models.Model):
         return self.community_name
     
 class CommunityMembership(models.Model):
-    id = models.AutoField(primary_key=True, default=random_id, editable=False)
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     community = models.ForeignKey(CommunityProfile, on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False)
@@ -67,7 +67,7 @@ class CommunityMembershipAnswer(models.Model):
         return f"Answer by {self.user.username} to '{self.question.question_text}'"
     
 class CommunityApplication(models.Model):
-    id = models.AutoField(primary_key=True, default=random_id, editable=False)
+    id = models.AutoField(primary_key=True)
     PENDING = 'Pending'
     APPROVED = 'Approved'
     REJECTED = 'Rejected'
