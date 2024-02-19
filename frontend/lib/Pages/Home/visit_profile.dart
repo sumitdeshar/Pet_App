@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Models/owner_profile_models.dart';
 import 'package:frontend/Pages/Community/list_community.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
-import 'package:frontend/Pages/posts/post_detail.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/Constants/token_auth.dart';
 import 'package:http/http.dart' as http;
@@ -11,16 +10,16 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:frontend/Models/post_model.dart';
 
-class OwnerProfile extends StatefulWidget {
-  const OwnerProfile({super.key, required this.title});
+class VisitProfile extends StatefulWidget {
+  const VisitProfile({super.key, required this.title, required userId});
 
   final String title;
 
   @override
-  State<OwnerProfile> createState() => _OwnerProfileState();
+  State<VisitProfile> createState() => VisitProfileState();
 }
 
-class _OwnerProfileState extends State<OwnerProfile> {
+class VisitProfileState extends State<VisitProfile> {
   List<PetOwnerProfile> ownProfile = [];
   bool isLoading = true;
   late String user;
@@ -29,7 +28,7 @@ class _OwnerProfileState extends State<OwnerProfile> {
 
   Future<void> _fetchProfileData() async {
     try {
-      const String baseUrl = "http://10.0.2.2:8000/";
+      const String baseUrl = "http://10.0.2.2:8000/'"; //${widget.userId}
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {
@@ -71,47 +70,10 @@ class _OwnerProfileState extends State<OwnerProfile> {
     }
   }
 
-  Future<void> fetchPosts() async {
-    try {
-      const String baseUrl = "http://10.0.2.2:8000/posts/";
-      final String? accessToken = await getAccessToken();
-
-      if (accessToken != null) {
-        var response = await http.get(
-          Uri.parse(baseUrl),
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-            'Content-Type': 'application/json',
-          },
-        );
-
-        if (response.statusCode == 200) {
-          List<dynamic> responseData = jsonDecode(response.body);
-          print(responseData);
-
-          posts = responseData.map((jsonpost) {
-            return PostModel.fromJson(jsonpost);
-          }).toList();
-
-          setState(() {
-            isLoading = false;
-          });
-        } else {
-          throw Future.error('Failed to load posts: ${response.statusCode}');
-        }
-      } else {
-        print('Access token is null');
-      }
-    } catch (e) {
-      print('Error fetching posts: $e');
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     _fetchProfileData();
-    fetchPosts();
   }
 
   @override
@@ -161,8 +123,6 @@ class _OwnerProfileState extends State<OwnerProfile> {
               },
               child: const Text('View Community List'),
             ),
-            const SizedBox(height: 16),
-            _buildPostsSection(posts),
           ],
         ),
       ),
@@ -214,34 +174,19 @@ class _OwnerProfileState extends State<OwnerProfile> {
                           width: 80, // Adjust the button size as needed
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditProfile(
-                                    petOwnerProfile: ownProfile.isNotEmpty
-                                        ? ownProfile[0]
-                                        : PetOwnerProfile(
-                                            user: User(
-                                              id: 0,
-                                              username: "",
-                                              firstName: "",
-                                              lastName: "",
-                                            ),
-                                            pets: [],
-                                            bio: "",
-                                            photo: "",
-                                            followers: [],
-                                            following: [],
-                                          ),
-                                  ),
-                                ),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => Follow(
+                              //     ),
+                              //   ),
+                              // );
                             },
                             child: Row(
                               children: [
                                 Icon(Icons.add),
                                 SizedBox(width: 4),
-                                Text('Edit'),
+                                Text('Follow'),
                               ],
                             ),
                             style: ButtonStyle(
@@ -374,92 +319,92 @@ class _OwnerProfileState extends State<OwnerProfile> {
     return _buildProfileImage(imgpath);
   }
 
-  Widget _buildPostsSection(List<PostModel> posts) {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Posts:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            for (var post in posts)
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PostDetailScreen(
-                        postTitle: post.description,
-                        postContent:
-                            "${post.createdAt.year}-${post.createdAt.month}-${post.createdAt.day}",
-                        imagePath: post.imageUrl,
-                      ),
-                    ),
-                  );
-                },
-                child: _buildPostPreview(
-                  post.description,
-                  post.createdAt,
-                  post.imageUrl,
-                  post.author[0].username,
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildPostsSection(List<PostModel> posts) {
+  //   return Container(
+  //     decoration: const BoxDecoration(
+  //       border: Border(bottom: BorderSide(color: Colors.grey)),
+  //     ),
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           const Text(
+  //             'Posts:',
+  //             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  //           ),
+  //           const SizedBox(height: 8),
+  //           for (var post in posts)
+  //             GestureDetector(
+  //               onTap: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                     builder: (context) => PostDetailScreen(
+  //                       postTitle: post.description,
+  //                       postContent:
+  //                           "${post.createdAt.year}-${post.createdAt.month}-${post.createdAt.day}",
+  //                       imagePath: post.imageUrl,
+  //                     ),
+  //                   ),
+  //                 );
+  //               },
+  //               child: _buildPostPreview(
+  //                 post.description,
+  //                 post.createdAt,
+  //                 post.imageUrl,
+  //                 post.author[0].username,
+  //               ),
+  //             ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildPostPreview(
-    String postTitle,
-    DateTime createdAt,
-    String imagePath,
-    String author,
-  ) {
-    String formattedDate =
-        "${createdAt.year}-${createdAt.month}-${createdAt.day}";
+  // Widget _buildPostPreview(
+  //   String postTitle,
+  //   DateTime createdAt,
+  //   String imagePath,
+  //   String author,
+  // ) {
+  //   String formattedDate =
+  //       "${createdAt.year}-${createdAt.month}-${createdAt.day}";
 
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.blueGrey, width: 2.0),
-        borderRadius: BorderRadius.circular(10.0),
-        color: Colors.grey[200],
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.25),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            postTitle,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            formattedDate,
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          const SizedBox(height: 8),
-          _buildPostImage(imagePath),
-        ],
-      ),
-    );
-  }
+  //   return Container(
+  //     padding: const EdgeInsets.all(16.0),
+  //     margin: const EdgeInsets.symmetric(vertical: 10.0),
+  //     decoration: BoxDecoration(
+  //       border: Border.all(color: Colors.blueGrey, width: 2.0),
+  //       borderRadius: BorderRadius.circular(10.0),
+  //       color: Colors.grey[200],
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withOpacity(0.25),
+  //           spreadRadius: 2,
+  //           blurRadius: 5,
+  //           offset: const Offset(0, 3),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(
+  //           postTitle,
+  //           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  //         ),
+  //         const SizedBox(height: 4),
+  //         Text(
+  //           formattedDate,
+  //           style: const TextStyle(fontSize: 14, color: Colors.grey),
+  //         ),
+  //         const SizedBox(height: 8),
+  //         _buildPostImage(imagePath),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildProfileImage(String imagePath) {
     double fixedWidth = 100.0;
@@ -530,108 +475,5 @@ class _OwnerProfileState extends State<OwnerProfile> {
         ),
       );
     }
-  }
-}
-
-class EditProfile extends StatefulWidget {
-  final PetOwnerProfile petOwnerProfile;
-
-  const EditProfile({Key? key, required this.petOwnerProfile})
-      : super(key: key);
-
-  @override
-  _EditProfileState createState() => _EditProfileState();
-}
-
-class _EditProfileState extends State<EditProfile> {
-  late TextEditingController firstnameController;
-  late TextEditingController lastnameController;
-  late TextEditingController bioController;
-
-  @override
-  void initState() {
-    super.initState();
-    firstnameController =
-        TextEditingController(text: widget.petOwnerProfile.user.firstName);
-    lastnameController =
-        TextEditingController(text: widget.petOwnerProfile.user.lastName);
-    bioController = TextEditingController(text: widget.petOwnerProfile.bio);
-  }
-
-  Future<void> _saveChanges() async {
-    final updatedUser = UpdateUser(
-      firstName: firstnameController.text,
-      lastName: lastnameController.text,
-    );
-
-    final updatedProfile = UpdateProfile(
-      bio: bioController.text,
-      user: updatedUser,
-    );
-
-    final String updatedProfileJson = jsonEncode(updatedProfile);
-    final String? accessToken = await getAccessToken();
-
-    if (accessToken != null) {
-      final response = await http.patch(
-        Uri.parse('http://10.0.2.2:8000/edit_info'),
-        body: updatedProfileJson,
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        Navigator.pop(context);
-      } else {
-        print('Error saving changes: ${response.statusCode}');
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Edit Profile',
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Edit First Name:'),
-            TextFormField(
-              controller: firstnameController,
-              decoration: InputDecoration(
-                hintText: 'Enter your first name ...',
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text('Edit Last Name:'),
-            TextFormField(
-              controller: lastnameController,
-              decoration: InputDecoration(
-                hintText: 'Enter your last name ...',
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text('Edit BIO:'),
-            TextFormField(
-              controller: bioController,
-              decoration: InputDecoration(
-                hintText: 'Enter your bio ...',
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _saveChanges,
-              child: Text('Save Changes'),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

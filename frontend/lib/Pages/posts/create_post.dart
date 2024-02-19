@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/token_auth.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
@@ -7,6 +6,7 @@ import 'package:frontend/Widgets/appbar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
+import 'package:frontend/Pages/Community/community_home.dart';
 
 class Create_Post extends StatefulWidget {
   final int communityId;
@@ -33,38 +33,47 @@ class _Create_PostState extends State<Create_Post> {
 
         String content = await postTextController.text;
 
-        if (_selectedImage == null) {
-          print('No image selected');
-          return;
-        }
-
-        List<int> imageBytes = await _selectedImage!.readAsBytes();
-        String base64Image = base64Encode(imageBytes);
-        print('Base64 Image: $base64Image');
-
-        int communityId = await widget.communityId;
-        String dynamicFileName =
-            'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
-
         var request = http.MultipartRequest('POST', Uri.parse(baseUrl))
           ..headers['Authorization'] = 'Bearer $accessToken'
           ..headers['Content-Type'] = 'multipart/form-data'
           ..fields['content'] = content
-          ..fields['community'] = communityId.toString()
-          ..files.add(http.MultipartFile(
+          ..fields['community'] = widget.communityId.toString();
+
+        if (_selectedImage != null) {
+          List<int> imageBytes = await _selectedImage!.readAsBytes();
+          String base64Image = base64Encode(imageBytes);
+          print('Base64 Image: $base64Image');
+
+          String dynamicFileName =
+              'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+          request.files.add(http.MultipartFile(
             'photo',
             http.ByteStream.fromBytes(imageBytes),
             imageBytes.length,
             filename: dynamicFileName,
           ));
+        }
 
         var response = await http.Response.fromStream(await request.send());
         print('Server response: ${response.statusCode}, ${response.body}');
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 200 ||
+            response.statusCode == 201 ||
+            response.statusCode == 202) {
           dynamic responseData = jsonDecode(response.body);
+
           print('Server response: ${response.statusCode}, ${response.body}');
           print(responseData);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CommunityProfilePage(
+                communityId: widget.communityId,
+              ),
+            ),
+          );
         } else {
           throw Exception(
             'Failed to create post. Status code: ${response.statusCode}, Response: ${response.body}',

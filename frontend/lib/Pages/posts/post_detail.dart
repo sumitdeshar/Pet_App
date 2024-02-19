@@ -2,6 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/Widgets/appbar.dart';
 
 class PostDetailScreen extends StatelessWidget {
   final String postTitle;
@@ -17,8 +18,8 @@ class PostDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Post Detail'),
+      appBar: const CustomAppBar(
+        title: 'Post Detail View',
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -27,48 +28,87 @@ class PostDetailScreen extends StatelessWidget {
           children: [
             Text(
               postTitle,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               postContent,
-              style: TextStyle(fontSize: 18, color: Colors.black87),
+              style: const TextStyle(fontSize: 18, color: Colors.black87),
             ),
-            SizedBox(height: 16),
-            _buildPostImage(imagePath),
+            const SizedBox(height: 16),
+            _buildPostImage(imagePath, context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPostImage(String imagePath) {
+  Widget _buildPostImage(String imagePath, BuildContext context) {
+    double containerWidthPercentage =
+        0.8; // Set your desired percentage (in this example, 80%)
+
+    double containerWidth =
+        MediaQuery.of(context).size.width * containerWidthPercentage;
     if (imagePath.startsWith('http')) {
-      return AspectRatio(
-        aspectRatio: 9 / 10,
+      return Container(
+        margin: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
         child: CachedNetworkImage(
           imageUrl: imagePath,
+          width: containerWidth,
+          fit: BoxFit.fill,
           placeholder: (context, url) => const CircularProgressIndicator(),
           errorWidget: (context, url, error) => const Icon(Icons.error),
-          fit: BoxFit.fill,
-        ),
-      );
-    } else if (imagePath.startsWith('images')) {
-      // Local asset image
-      return AspectRatio(
-        aspectRatio: 9 / 10,
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.fill,
         ),
       );
     } else {
       return Container(
-        color: Colors.grey,
-        child: const Center(
-          child: Text('Unsupported image source'),
+        margin: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey), // Border color
+          borderRadius:
+              BorderRadius.all(Radius.circular(10.0)), // Border radius
+        ),
+        child: Image.asset(
+          'images/default_pp.jpg',
+          width: containerWidth,
+          fit: BoxFit.fill,
         ),
       );
     }
   }
+  // Widget _buildPostImage(String imagePath) {
+  //   if (imagePath.startsWith('http')) {
+  //     return AspectRatio(
+  //       aspectRatio: 9 / 10,
+  //       child: CachedNetworkImage(
+  //         imageUrl: imagePath,
+  //         placeholder: (context, url) => const CircularProgressIndicator(),
+  //         errorWidget: (context, url, error) => const Icon(Icons.error),
+  //         fit: BoxFit.fill,
+  //       ),
+  //     );
+  //   } else if (imagePath.startsWith('images')) {
+  //     // Local asset image
+  //     return AspectRatio(
+  //       aspectRatio: 9 / 10,
+  //       child: Image.asset(
+  //         imagePath,
+  //         fit: BoxFit.fill,
+  //       ),
+  //     );
+  //   } else {
+  //     return Container(
+  //       color: Colors.grey,
+  //       child: const Center(
+  //         child: Text('Unsupported image source'),
+  //       ),
+  //     );
+  //   }
+  // }
 }

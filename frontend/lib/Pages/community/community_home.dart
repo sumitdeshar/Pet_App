@@ -142,7 +142,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
 
   Widget _buildCommunityPicture() {
     return _buildPostImage(
-        communityData?.coverPhoto ?? 'assets/community_image.jpg');
+        communityData?.coverPhoto ?? 'images/default_pp.jpg');
   }
 
   Widget _buildcommunityInfo() {
@@ -268,7 +268,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
       children: [
         const Text(
           'Posts:',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         for (var post in posts)
@@ -290,64 +290,153 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
   ) {
     String formattedDate =
         "${createdAt.year}-${createdAt.month}-${createdAt.day}";
+    double containerWidthPercentage = 1;
+    double containerWidth =
+        MediaQuery.of(context).size.width * containerWidthPercentage;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            author,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+    if (imagePath.isEmpty) {
+      return Center(
+        child: Column(
+          children: [
+            Container(
+              width: containerWidth,
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 170, 217, 234),
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      author,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      formattedDate,
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                    Text(
+                      postTitle,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          const SizedBox(height: 4),
-          Text(
-            formattedDate,
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          Text(
-            postTitle,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          // const SizedBox(height: 8),
-          _buildPostImage(imagePath),
-        ],
-      ),
-    );
+            const SizedBox(height: 20),
+          ],
+        ),
+      );
+    } else {
+      return Center(
+        child: Column(
+          children: [
+            Container(
+              width: containerWidth,
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 170, 217, 234),
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      author,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      formattedDate,
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                    Text(
+                      postTitle,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Center(child: _buildPostImage(imagePath)),
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      );
+    }
   }
 
   Widget _buildPostImage(String imagePath) {
+    double containerWidthPercentage =
+        0.8; // Set your desired percentage (in this example, 80%)
+
+    double containerWidth =
+        MediaQuery.of(context).size.width * containerWidthPercentage;
     if (imagePath.startsWith('http')) {
-      return AspectRatio(
-        aspectRatio: 16 / 10,
+      return Container(
+        margin: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
         child: CachedNetworkImage(
           imageUrl: imagePath,
+          width: containerWidth,
+          fit: BoxFit.fill,
           placeholder: (context, url) => const CircularProgressIndicator(),
           errorWidget: (context, url, error) => const Icon(Icons.error),
-          fit: BoxFit.fill,
-        ),
-      );
-    } else if (imagePath.startsWith('images')) {
-      // Local asset image
-      return AspectRatio(
-        aspectRatio: 16 / 10,
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.fill,
         ),
       );
     } else {
       return Container(
-        color: Colors.grey,
-        child: const Center(
-          child: Text('Unsupported image source'),
+        margin: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey), // Border color
+          borderRadius:
+              BorderRadius.all(Radius.circular(10.0)), // Border radius
+        ),
+        child: Image.asset(
+          'images/default_pp.jpg',
+          width: containerWidth,
+          fit: BoxFit.fill,
         ),
       );
     }

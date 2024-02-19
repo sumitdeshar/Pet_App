@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/Constants/token_auth.dart';
-import 'package:frontend/Pages/posts/new_feeds.dart';
+import 'package:frontend/Pages/Home/home_page.dart';
 import 'package:frontend/Pages/Home/register_page.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:http/http.dart' as http;
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => NewsFeed()), //title: 'Owner Profile',
+                builder: (context) => MyHomePage()), //title: 'Owner Profile',
             //title: 'Pet App'
           );
         }

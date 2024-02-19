@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/token_auth.dart';
 import 'package:frontend/Widgets/appbar.dart';
+import 'package:frontend/Pages/Community/list_community.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -53,6 +54,10 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
             duration: Duration(seconds: 5),
           ),
         );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CommunityList()),
+        );
       } else {
         print(
             'Community application failed with status code: ${response.statusCode}');
@@ -85,6 +90,7 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.blue,
       ),

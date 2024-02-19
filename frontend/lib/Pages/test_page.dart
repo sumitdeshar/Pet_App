@@ -1,21 +1,75 @@
+// home_page.dart
 import 'package:flutter/material.dart';
-import 'package:frontend/Constants/token_auth.dart';
-import 'package:frontend/Models/post_model.dart';
+import 'package:frontend/Models/owner_profile_models.dart';
+import 'package:frontend/Pages/Community/list_community.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
+import 'package:frontend/Pages/posts/post_detail.dart';
 import 'package:frontend/Widgets/appbar.dart';
+import 'package:frontend/Constants/token_auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:frontend/Models/post_model.dart';
 
-class NewsFeed extends StatefulWidget {
+class OwnerProfile extends StatefulWidget {
+  const OwnerProfile({super.key, required this.title});
+
+  final String title;
+
   @override
-  State<NewsFeed> createState() => _NewsFeedState();
+  State<OwnerProfile> createState() => _OwnerProfileState();
 }
 
-class _NewsFeedState extends State<NewsFeed> {
-  List<PostModel> posts = [];
+class _OwnerProfileState extends State<OwnerProfile> {
+  List<PetOwnerProfile> ownProfile = [];
   bool isLoading = true;
-  String appBarTitle = 'New Feeds';
+  late String user;
+  String appBarTitle = '';
+  List<PostModel> posts = [];
+
+  Future<void> _fetchProfileData() async {
+    try {
+      const String baseUrl = "http://10.0.2.2:8000/";
+      final String? accessToken = await getAccessToken();
+
+      if (accessToken != null) {
+        var response = await http.get(
+          Uri.parse(baseUrl),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          dynamic responseData = jsonDecode(response.body);
+          print(response.body);
+          if (responseData is List) {
+            ownProfile = responseData.map((profile) {
+              return PetOwnerProfile.fromJson(profile);
+            }).toList();
+          } else if (responseData is Map<String, dynamic>) {
+            ownProfile = [
+              PetOwnerProfile.fromJson(responseData),
+            ];
+          }
+
+          user = ownProfile.isNotEmpty ? ownProfile[0].user.username : '';
+          appBarTitle = "$user's Profile";
+
+          setState(() {
+            isLoading = false;
+          });
+        } else {
+          throw Future.error('Failed to load profile: ${response.statusCode}');
+        }
+      } else {
+        print('Access token is null');
+      }
+    } catch (e) {
+      print('Error fetching profile: $e');
+    }
+  }
 
   Future<void> fetchPosts() async {
     try {
@@ -56,6 +110,7 @@ class _NewsFeedState extends State<NewsFeed> {
   @override
   void initState() {
     super.initState();
+    _fetchProfileData();
     fetchPosts();
   }
 
@@ -68,12 +123,26 @@ class _NewsFeedState extends State<NewsFeed> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Posted by',
-              style: TextStyle(color: Colors.black),
+            _buildProfilePicture(),
+            const SizedBox(height: 16),
+            _buildUserInfo(),
+            const SizedBox(height: 16),
+            _FollowSection(),
+            const SizedBox(height: 16),
+            _buildPetsSection(),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CommunityList()),
+                );
+              },
+              child: const Text('View Community List'),
             ),
             const SizedBox(height: 16),
-            viewPosts(),
+            _buildPostsSection(posts),
           ],
         ),
       ),
@@ -81,49 +150,76 @@ class _NewsFeedState extends State<NewsFeed> {
     );
   }
 
-  Widget viewPosts() {
-    return SingleChildScrollView(
-      child: Column(
-        children: posts.map((post) => _buildPostCard(post)).toList(),
-      ),
-    );
+  Widget _buildProfilePicture() {
+    return _buildPostImage(ownProfile.isNotEmpty ? ownProfile[0].photo : '');
   }
 
-  Widget _buildPostCard(PostModel post) {
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      child: Column(
+  Widget _buildUserInfo() {
+    final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  post.description,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+          if (profile != null)
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '${profile.user.firstName}',
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      Expanded(
+                        child: Text(
+                          '${profile.user.lastName}',
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Posted by ${post.author.isNotEmpty ? post.author.first.username : ''}',
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                // const SizedBox(height: 16),
-                // _buildPostImage(post.imageUrl),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildActionButton(icon: Icons.thumb_up, label: 'Upvote'),
-                    _buildActionButton(icon: Icons.comment, label: 'Comment'),
-                    _buildActionButton(icon: Icons.share, label: 'Share'),
-                  ],
-                ),
-              ],
+                  Text(
+                    '${profile.user.username}',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${profile.bio}',
+                    style: const TextStyle(fontSize: 16),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {},
+              child: const Row(
+                children: [
+                  Icon(Icons.add),
+                  SizedBox(width: 6),
+                  Text('Follow'),
+                ],
+              ),
             ),
           ),
         ],
@@ -131,13 +227,173 @@ class _NewsFeedState extends State<NewsFeed> {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label}) {
-    return Column(
+  Widget _FollowSection() {
+    final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(icon),
-        const SizedBox(height: 4),
-        Text(label),
+        Text('Following'),
+        Text(
+          '${profile != null ? profile.following.length : 0}',
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        Text('Followers'),
+        Text(
+          '${profile != null ? profile.followers.length : 0}',
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
       ],
     );
+  }
+
+  Widget _buildPetsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'My Pets:',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        if (ownProfile.isNotEmpty && ownProfile[0].pets.isNotEmpty)
+          ...ownProfile[0].pets.map((pet) => _buildPetSegment(pet)),
+      ],
+    );
+  }
+
+  Widget _buildPetSegment(Pet pet) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPetPicture(pet.petphoto),
+          Text(
+            'Pet Name: ${pet.name}',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            'Species: ${pet.species}',
+            style: const TextStyle(fontSize: 16),
+          ),
+          Text(
+            'Breed: ${pet.breed}',
+            style: const TextStyle(fontSize: 16),
+          ),
+          Text(
+            'Age: ${pet.age}',
+            style: const TextStyle(fontSize: 16),
+          ),
+          // You can add more pet details as needed
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPetPicture(imgpath) {
+    return _buildPostImage(imgpath);
+  }
+
+  Widget _buildPostsSection(List<PostModel> posts) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Posts:',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        for (var post in posts)
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PostDetailScreen(
+                    postTitle: post.description,
+                    postContent:
+                        "${post.createdAt.year}-${post.createdAt.month}-${post.createdAt.day}",
+                    imagePath: post.imageUrl,
+                  ),
+                ),
+              );
+            },
+            child: _buildPostPreview(
+              post.description,
+              post.createdAt,
+              post.imageUrl,
+              post.author[0].username,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildPostPreview(
+    String postTitle,
+    DateTime createdAt,
+    String imagePath,
+    String author,
+  ) {
+    String formattedDate =
+        "${createdAt.year}-${createdAt.month}-${createdAt.day}";
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            postTitle,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            formattedDate,
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+          const SizedBox(height: 8),
+          _buildPostImage(imagePath),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPostImage(String imagePath) {
+    double fixedWidth = 100.0;
+    double fixedHeight = 100.0;
+    if (imagePath.startsWith('http')) {
+      return CachedNetworkImage(
+        imageUrl: imagePath,
+        width: fixedWidth,
+        height: fixedHeight,
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+        fit: BoxFit.cover,
+      );
+    } else if (imagePath.startsWith('images')) {
+      // Local asset image
+      return Image.asset(
+        imagePath,
+        width: fixedWidth,
+        height: fixedHeight,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.asset(
+        'images/default_pp.jpg',
+        width: fixedWidth,
+        height: fixedHeight,
+        fit: BoxFit.cover,
+      );
+    }
   }
 }
