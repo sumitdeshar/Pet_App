@@ -6,7 +6,7 @@ from community.models import CommunityProfile
 
 # Create your models here.
 class Post(models.Model):
-    id = models.AutoField(primary_key=True, default=random_id, editable=False)
+    id = models.AutoField(primary_key=True)
     community = models.ForeignKey(CommunityProfile, related_name='posts', on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -21,7 +21,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    id = models.AutoField(primary_key=True, default=random_id, editable=False)
+    id = models.AutoField(primary_key=True)
     post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     parent_comment = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
     content = models.TextField()
@@ -37,7 +37,7 @@ class Comment(models.Model):
 
 
 class Upvote(models.Model):
-    id = models.AutoField(primary_key=True, default=random_id, editable=False)
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name='upvotes', null=True, blank=True, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

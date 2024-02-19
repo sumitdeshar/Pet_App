@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.db.models import Q
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
@@ -14,6 +15,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import *
 from .serializers import *
+
 
 
 # Create your views here.
@@ -70,7 +72,15 @@ def get_pet_owner_profile(request):
             user_id = request.user.id
             user_profile = Profile.objects.get(user=user_id)
             profile_serializer = PetOwnerProfileSerializer(user_profile)
-            print(profile_serializer.data)
+            follower_serializer = FollowerSerializer(user_profile.followers, many=True)
+            following_serializer = FollowingSerializer(user_profile.following, many=True)
+            follower_list = follower_serializer.data
+            following_list = following_serializer.data
+
+            print("Follower List:", follower_list)
+            print("Following List:", following_list)
+            
+            # print(profile_serializer.data)
             return Response(profile_serializer.data)
         except Profile.DoesNotExist:
             return Response({"message": "Authenticated user with ID: {}".format(user_id)}, status=status.HTTP_404_NOT_FOUND)
@@ -105,7 +115,61 @@ def register(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)
 
+@csrf_exempt
+def search_users_view(request):
+    if request.method == 'POST':
+        searched = request.POST['searchTerm']
+        
+        user_by_username = User.objects.filter(username__icontains=searched)
+        user_by_firstname = User.objects.filter(first_name__icontains=searched)
+        user_by_lastname = User.objects.filter(last_name__icontains=searched)
+        
+        user_list = (user_by_username | user_by_firstname | user_by_lastname).distinct()
+        
+        profile_data = []
+        for user in user_list:
+            try:
+                profile = Profile.objects.get(user=user)
+                serializer = SearchProfile(profile) 
+                profile_data.append(serializer.data) 
+            except Profile.DoesNotExist:
+                JsonResponse({'error': 'No user found'})
+        print(profile_data)
+        return JsonResponse({'profiles': profile_data}, safe=False)
 
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user_profile = Profile.objects.get(user=request.user)
+
+    if request.method == 'PATCH':
+        serializer = UpdateProfileSerializer(user_profile, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def follow_user(request, user_id):
+    try:
+        follower_profile = request.user.profile
+        following_profile = Profile.objects.get(user=user_id)
+
+        # Check if the user is not already followed
+        if following_profile.user not in follower_profile.following.all():
+            follower_profile.following.add(following_profile.user)
+            following_profile.followers.add(request.user)
+
+            return Response({"message": "You are now following user {}.".format(user_id)})
+        else:
+            return Response({"message": "You are already following user {}.".format(user_id)})
+    except Profile.DoesNotExist:
+        return Response({"message": "User with ID {} not found.".format(user_id)}, status=status.HTTP_404_NOT_FOUND)
     
 # def logout(request):
 #     auth.logout(request)

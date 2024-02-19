@@ -9,5 +9,8 @@ urlpatterns = [
     # path('home', views.index, name = "home"),
     path('login', views.login, name = "login"),
     path('register', views.register, name='register'),
+    path('search_user', views.search_users_view, name='search_users'),
+    path('follow_user', views.follow_user, name='follow_user'),
+    path('edit_info', views.update_profile, name='edit_info'),
     # path('logout', views.logout, name = "logout"),
 ]

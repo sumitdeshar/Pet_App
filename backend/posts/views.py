@@ -61,6 +61,12 @@ def post_list(request, pk):
     serializer = ViewPostSerializer(post)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def post_list(request, community_id):
+    posts = Post.objects.filter(community__id=community_id)
+    serializer = ViewPostSerializer(posts, many=True)
+    return Response(serializer.data)
+
 @api_view(['GET', 'POST'])
 def comment_create(request, post_pk):
     post = get_object_or_404(Post, pk=post_pk)

@@ -1,6 +1,7 @@
 import jwt
 import os
 import random
+from django.conf import settings
 
 # utils.py
 def get_user_id_from_token(auth_header):
@@ -18,4 +19,21 @@ def get_user_id_from_token(auth_header):
 def random_id():
     return random.randint(1, 2147483647)
 
+#is not being used right now
+def get_media_paths_for_directory(subdirectory):
+   
+    media_root = settings.MEDIA_ROOT
+    subdirectory_path = os.path.join(media_root, subdirectory)
+
+    file_paths = []
+
+    if os.path.exists(subdirectory_path):
+        for root, dirs, files in os.walk(subdirectory_path):
+            for file in files:
+                # Create a full path to the file
+                file_path = os.path.join(root, file)
+                # Add the file path to the list
+                file_paths.append(file_path)
+
+    return file_paths
 

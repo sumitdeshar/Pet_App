@@ -1,17 +1,17 @@
-import uuid
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser, BaseUserManager, PermissionsMixin
+
+from django.contrib.auth.models import PermissionsMixin
 from cloudinary_storage.storage import MediaCloudinaryStorage
 from core.utlis import random_id
-
-#create your models
+import uuid
 
 class Profile(models.Model):
-    profile_id = models.AutoField(primary_key=True, default=random_id, editable=False)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile_user')
     bio = models.TextField(blank=True)
-    phone_number = models.CharField(max_length=15)
-    address = models.TextField()
+    phone_number = models.CharField(max_length=20)  
+    address = models.CharField(max_length=255)  
     dob = models.DateField(auto_now_add=True)
     pet_info = models.ManyToManyField('Pet', blank=True)
     followers = models.ManyToManyField(User, related_name='following', blank=True)
@@ -23,14 +23,16 @@ class Profile(models.Model):
         null=True,
         storage=MediaCloudinaryStorage()
     )
+
     def __str__(self):
         return self.user.username
 
+
 class Pet(models.Model):
-    id = models.AutoField(primary_key=True, default=random_id, editable=False)
-    name = models.CharField(max_length=100)
-    species = models.CharField(max_length=50)
-    breed = models.CharField(max_length=50)
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    species = models.CharField(max_length=255)  
+    breed = models.CharField(max_length=255)
     age = models.PositiveIntegerField()
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='pets')
     petphoto = models.ImageField(upload_to='pet_photos/', blank=True, null=True)
