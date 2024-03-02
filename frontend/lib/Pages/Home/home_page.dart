@@ -6,6 +6,7 @@ import 'package:frontend/Widgets/appbar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -64,16 +65,20 @@ class _MyHomePageState extends State<MyHomePage> {
         );
 
         if (response.statusCode == 200) {
-          List<dynamic> responseData = jsonDecode(response.body);
+          dynamic responseData = jsonDecode(response.body);
           print(responseData);
 
-          posts = responseData.map((jsonpost) {
-            return PostModel.fromJson(jsonpost);
-          }).toList();
+          if (responseData is List<dynamic>) {
+            posts = responseData.map((jsonPost) {
+              return PostModel.fromJson(jsonPost);
+            }).toList();
 
-          setState(() {
-            isLoading = false;
-          });
+            setState(() {
+              isLoading = false;
+            });
+          } else {
+            throw Future.error('Invalid response format');
+          }
         } else {
           throw Future.error('Failed to load posts: ${response.statusCode}');
         }
@@ -132,6 +137,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildPostCard(PostModel post) {
+    // Retrieve createdAt from the post object
+    DateTime createdAt = post.createdAt;
+
     return Card(
       margin: const EdgeInsets.all(8.0),
       color: Color.fromARGB(255, 160, 209, 233),
@@ -144,21 +152,48 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  post.description,
+                  '${post.author.isNotEmpty ? post.author.first.username.toUpperCase() : ''}',
                   style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 18,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  DateFormat('MMMM d, y').format(createdAt),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                Text(
+                  post.title,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  'Posted by ${post.author.isNotEmpty ? post.author.first.username : ''}',
-                  style: const TextStyle(color: Colors.black),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 176, 227, 226),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      post.description,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
                 ),
-                Text('${post.id}'),
-                const SizedBox(height: 16),
-                _buildPostImage(post.imageUrl),
+                const SizedBox(height: 8),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -167,7 +202,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       icon: Icons.thumb_up,
                       label: 'Upvote',
                       onTap: () {
-                        _handleUpvote(post.id);
+                        _handleUpvote(
+                            post.id); // Make sure _handleUpvote is implemented
                       },
                     ),
                     _buildActionButton(
@@ -242,68 +278,3 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 }
-
-// class UserSearchApp extends StatefulWidget {
-//   const UserSearchApp({super.key});
-
-//   @override
-//   _UserSearchAppState createState() => _UserSearchAppState();
-// }
-
-// class _UserSearchAppState extends State<UserSearchApp> {
-//   List<User> searchResults = [];
-
-//   Future<List<User>> searchUsers(String query) async {
-//     // Replace the URL with your actual backend endpoint
-//     final response =
-//         await http.get(Uri.parse('http://10.0.2.2:8000/search/?query=$query'));
-
-//     if (response.statusCode == 200) {
-//       final List<dynamic> data = json.decode(response.body)['users'];
-//       return data.map((userJson) => User.fromJson(userJson)).toList();
-//     } else {
-//       throw Exception('Failed to load users');
-//     }
-//   }
-
-//   void performSearch(String query) async {
-//     try {
-//       List<User> results = await searchUsers(query);
-//       setState(() {
-//         searchResults = results;
-//       });
-//     } catch (e) {
-//       print('Error searching users: $e');
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Padding(
-//           padding: const EdgeInsets.all(8.0),
-//           child: TextField(
-//             onChanged: (query) => performSearch(query),
-//             decoration: const InputDecoration(
-//               labelText: 'Search users',
-//               suffixIcon: Icon(Icons.search),
-//             ),
-//           ),
-//         ),
-//         Expanded(
-//           child: ListView.builder(
-//             itemCount: searchResults.length,
-//             itemBuilder: (context, index) {
-//               final user = searchResults[index];
-//               return ListTile(
-//                 title: Text('${user.firstName} ${user.lastName}'),
-//                 subtitle: Text('@${user.username}'),
-//               );
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

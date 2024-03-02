@@ -10,10 +10,9 @@ class Post(models.Model):
     community = models.ForeignKey(CommunityProfile, related_name='posts', on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=255)
     content = models.TextField()
     photo = models.ImageField(upload_to='post_photos/', blank=True, null=True)
-    # video = models.ImageField(upload_to='videos/', blank=True, null=True, storage=VideoMediaCloudinaryStorage(),
-    #                           validators=[validate_video])
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

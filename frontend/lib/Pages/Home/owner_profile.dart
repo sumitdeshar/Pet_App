@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:frontend/Models/post_model.dart';
+import 'package:intl/intl.dart';
 
 class OwnerProfile extends StatefulWidget {
   const OwnerProfile({super.key, required this.title});
@@ -295,27 +296,25 @@ class _OwnerProfileState extends State<OwnerProfile> {
   }
 
   Widget _FollowSection() {
-    final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
+    // final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
 
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+      child: const Padding(
+        padding: EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Following'),
             Text(
-              '${profile != null ? profile.following.length : 0}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              'Following:  57',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text('Followers'),
             Text(
-              '${profile != null ? profile.followers.length : 0}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              'Followers:  49',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -398,17 +397,17 @@ class _OwnerProfileState extends State<OwnerProfile> {
                       builder: (context) => PostDetailScreen(
                         postTitle: post.description,
                         postContent:
-                            "${post.createdAt.year}-${post.createdAt.month}-${post.createdAt.day}",
+                            "${DateFormat('MMMM d, y').format(post.createdAt)}",
                         imagePath: post.imageUrl,
                       ),
                     ),
                   );
                 },
                 child: _buildPostPreview(
-                  post.description,
+                  post.title,
                   post.createdAt,
-                  post.imageUrl,
                   post.author[0].username,
+                  post.description,
                 ),
               ),
           ],
@@ -420,12 +419,16 @@ class _OwnerProfileState extends State<OwnerProfile> {
   Widget _buildPostPreview(
     String postTitle,
     DateTime createdAt,
-    String imagePath,
     String author,
+    String postContent,
   ) {
-    String formattedDate =
-        "${createdAt.year}-${createdAt.month}-${createdAt.day}";
+    String formattedDate = DateFormat('MMMM d, y').format(createdAt);
 
+    // Limit the number of characters to be shown in the post content
+    const int maxContentLength = 100;
+    String truncatedContent = postContent.length > maxContentLength
+        ? postContent.substring(0, maxContentLength) + '...'
+        : postContent;
     return Container(
       padding: const EdgeInsets.all(16.0),
       margin: const EdgeInsets.symmetric(vertical: 10.0),
@@ -446,16 +449,24 @@ class _OwnerProfileState extends State<OwnerProfile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            author,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            formattedDate,
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+          const SizedBox(height: 4),
+          Text(
             postTitle,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
-            formattedDate,
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
+            truncatedContent,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
           ),
-          const SizedBox(height: 8),
-          _buildPostImage(imagePath),
+          const SizedBox(height: 4),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/Home/login_page.dart';
+import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Widgets/appbar.dart';
 import 'dart:convert';
@@ -90,6 +91,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ],
         ),
       ),
+      bottomNavigationBar: CustomBottomNavBar(),
     );
   }
 }

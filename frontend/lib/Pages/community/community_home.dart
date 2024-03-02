@@ -7,6 +7,7 @@ import 'package:frontend/Pages/posts/create_post.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:frontend/Widgets/appbar.dart';
+import 'package:intl/intl.dart';
 
 class CommunityProfilePage extends StatefulWidget {
   final int communityId;
@@ -132,8 +133,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            const SizedBox(height: 16),
-            _buildPostsSection(posts),
+            viewPosts(),
           ],
         ),
       ),
@@ -141,7 +141,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
   }
 
   Widget _buildCommunityPicture() {
-    return _buildPostImage(
+    return _buildProfileImage(
         communityData?.coverPhoto ?? 'images/default_pp.jpg');
   }
 
@@ -262,142 +262,140 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
     );
   }
 
-  Widget _buildPostsSection(List<PostModel> posts) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Posts:',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        for (var post in posts)
-          _buildPost(
-            post.description,
-            post.createdAt,
-            post.imageUrl,
-            post.author.isNotEmpty ? post.author[0].username : '',
-          ),
-      ],
+  Widget viewPosts() {
+    return SingleChildScrollView(
+      child: Column(
+        children: posts.map((post) => _buildPostCard(post)).toList(),
+      ),
     );
   }
 
-  Widget _buildPost(
-    String postTitle,
-    DateTime createdAt,
-    String imagePath,
-    String author,
-  ) {
-    String formattedDate =
-        "${createdAt.year}-${createdAt.month}-${createdAt.day}";
-    double containerWidthPercentage = 1;
-    double containerWidth =
-        MediaQuery.of(context).size.width * containerWidthPercentage;
+  Widget _buildPostCard(PostModel post) {
+    // Retrieve createdAt from the post object
+    DateTime createdAt = post.createdAt;
 
-    if (imagePath.isEmpty) {
-      return Center(
-        child: Column(
-          children: [
-            Container(
-              width: containerWidth,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 170, 217, 234),
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 2),
+    return Card(
+      margin: const EdgeInsets.all(8.0),
+      color: Color.fromARGB(255, 160, 209, 233),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${post.author.isNotEmpty ? post.author.first.username.toUpperCase() : ''}',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      author,
+                ),
+                Text(
+                  DateFormat('MMMM d, y').format(createdAt),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                Text(
+                  post.title,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 176, 227, 226),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      post.description,
                       style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      formattedDate,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                    Text(
-                      postTitle,
-                      style: const TextStyle(
+                        color: Colors.black,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.normal,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildActionButton(
+                      icon: Icons.thumb_up,
+                      label: 'Upvote',
+                      onTap: () {},
+                    ),
+                    _buildActionButton(
+                      icon: Icons.comment,
+                      label: 'Comment',
+                      onTap: () {},
+                    ),
                   ],
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required Function() onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Icon(icon),
+          const SizedBox(height: 4),
+          Text(label),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileImage(String imagePath) {
+    double fixedWidth = 100.0;
+    double fixedHeight = 100.0;
+
+    if (imagePath.startsWith('http')) {
+      return CachedNetworkImage(
+        imageUrl: imagePath,
+        width: fixedWidth,
+        height: fixedHeight,
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+        fit: BoxFit.cover,
+      );
+    } else if (imagePath.startsWith('images')) {
+      // Local asset image
+      return Image.asset(
+        imagePath,
+        width: fixedWidth,
+        height: fixedHeight,
+        fit: BoxFit.cover,
       );
     } else {
-      return Center(
-        child: Column(
-          children: [
-            Container(
-              width: containerWidth,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 170, 217, 234),
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      author,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      formattedDate,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                    Text(
-                      postTitle,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Center(child: _buildPostImage(imagePath)),
-                    const SizedBox(height: 8),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
+      return Image.asset(
+        'images/default_pp.jpg',
+        width: fixedWidth,
+        height: fixedHeight,
+        fit: BoxFit.cover,
       );
     }
   }

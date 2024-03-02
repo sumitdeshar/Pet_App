@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final bool showBackButton;
 
-  const CustomAppBar({super.key, required this.title});
+  const CustomAppBar(
+      {Key? key, required this.title, this.showBackButton = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +15,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.transparent,
       elevation: 0.0,
       toolbarHeight: 50,
-      title: Text(title), // Use the provided title parameter
+      leading: showBackButton
+          ? IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          : null,
+      title: Text(title),
       centerTitle: true,
       flexibleSpace: Container(
         decoration: const BoxDecoration(
