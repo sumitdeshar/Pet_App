@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/Home/visit_profile.dart';
 import 'package:frontend/Widgets/appbar.dart';
+import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Models/searched_user.dart'; // import your UserProfile model
 
@@ -94,6 +95,7 @@ class _SearchState extends State<Search> {
           ],
         ),
       ),
+      bottomNavigationBar: CustomBottomNavBar(),
     );
   }
 }
