@@ -5,9 +5,9 @@ import pickle
 
 def get_post_recommendations(post_id, num_recommendations=10):
     # Load the necessary data
-    df = pd.read_csv('preprocesses_data.csv')
-    vector = pickle.load(open("utils/vector.pkl", "rb"))
-    cv = pickle.load(open("utils/cv.pkl", "rb"))
+    df = pd.read_csv('posts/preprocesses_data.csv')
+    vector = pickle.load(open("posts/utils/vector.pkl", "rb"))
+    cv = pickle.load(open("posts/utils/cv.pkl", "rb"))
 
     # Get the query post
     query_post = df[df['Post ID'] == post_id]['tags'].values[0]
