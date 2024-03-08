@@ -122,10 +122,8 @@ class _NewsFeedState extends State<NewsFeed> {
   }
 
   Widget viewPosts() {
-    return SingleChildScrollView(
-      child: Column(
-        children: posts.map((post) => _buildPostCard(post)).toList(),
-      ),
+    return Column(
+      children: posts.map((post) => _buildPostCard(post)).toList(),
     );
   }
 
