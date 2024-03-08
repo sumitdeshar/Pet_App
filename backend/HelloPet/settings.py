@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'community',
     'posts',
     'products',
+    'Adoption_dogs',
+    'Symptom_Analysis'
 ]
 
 
