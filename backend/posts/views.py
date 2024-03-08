@@ -8,10 +8,13 @@ from rest_framework import status
 # from rest_framework_simplejwt.authentication import JWTAuthentication
 from posts.models import *
 from posts.serializers import *
+from posts.post_recomendation import get_post_recommendations
+from posts.utlis import get_latest_post_id
 from core.utlis import get_user_id_from_token
 import csv
 from django.http import FileResponse
 from tempfile import NamedTemporaryFile
+from core.utlis import get_user_id_from_token
 
 
 @api_view(['GET'])
@@ -21,7 +24,8 @@ def display_posts(request):
         serializer = ViewPostSerializer(latest_posts, many=True)
         print(serializer.data)
         return Response(serializer.data[:5])
-
+    
+    
 @api_view(['GET', 'POST'])
 def post_create(request):
     auth_header = request.headers.get('Authorization')
@@ -37,6 +41,22 @@ def post_create(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+@api_view(['GET'])
+def display_posts_recomm(request):
+    if request.method == 'GET':
+        auth_header = request.headers.get('Authorization')
+        user_id = get_user_id_from_token(auth_header)
+
+        post_id = get_latest_post_id(user_id)
+        if post_id is not None:
+            latest_posts_ids = get_post_recommendations(post_id)
+            latest_posts = Post.objects.filter(id__in=latest_posts_ids)
+            serializer = ViewPostSerializer(latest_posts, many=True)
+            return Response(serializer.data[:10])
+        else:
+            return Response({"error": "Unable to retrieve recommended posts."}, status=500)
+
 
 
 def export_posts_to_csv(request):
@@ -71,15 +91,15 @@ def export_posts_to_csv(request):
     return response
 
     
-@api_view(['GET'])
-def post_list(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    serializer = ViewPostSerializer(post)
-    return Response(serializer.data)
+# @api_view(['GET'])
+# def post_list(request, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     serializer = ViewPostSerializer(post)
+#     return Response(serializer.data)
 
 @api_view(['GET'])
-def post_list(request, community_id):
-    posts = Post.objects.filter(community__id=community_id)
+def post_community_list(request, cid):
+    posts = Post.objects.filter(community__id=cid)
     serializer = ViewPostSerializer(posts, many=True)
     return Response(serializer.data)
 
