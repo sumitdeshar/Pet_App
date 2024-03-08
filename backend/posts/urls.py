@@ -3,7 +3,9 @@ from django.urls import path
 from posts.views import *
 
 urlpatterns = [
-    path('', display_posts, name='community-list'),
+    # path('', display_posts, name='post-list'),
+    path('', display_posts_recomm, name='post-list'),
+    path('community/int <cid>', post_community_list, name='post-community-list'),
     path('create', post_create, name='create post'),
     path('export_posts_to_csv', export_posts_to_csv, name='export_posts_to_csv'),
     # path('upvote/int <post_pk>', upvote_create, name='create upvote'),
