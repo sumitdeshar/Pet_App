@@ -13,7 +13,7 @@ def Adopt_Dogs(request):
     print("I was called")
     try:
         # Read the contents of the JSON file
-        with open('C:\\Users\\user\\Desktop\\Repositories\\Django\Machine_Learning\\Dogs.json', 'r') as file:
+        with open('F:/Projects/Pet_App/backend/Adoption_dogs/data/Dogs.json', 'r') as file:
             data = json.load(file)
         return JsonResponse(data, safe=False)
     except FileNotFoundError:
@@ -27,7 +27,7 @@ def Adopt_Dogs(request):
 def Shelters(request):
     try:
         # Read the contents of the JSON file
-        with open('C:\\Users\\user\\Desktop\\Repositories\\Django\Machine_Learning\\Shelters.json', 'r') as file:
+        with open('F:/Projects/Pet_App/backend/Adoption_dogs/data/Shelters.json', 'r') as file:
             data = json.load(file)
         return JsonResponse(data, safe=False)
     except FileNotFoundError:
