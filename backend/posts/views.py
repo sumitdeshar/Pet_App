@@ -98,8 +98,8 @@ def export_posts_to_csv(request):
 #     return Response(serializer.data)
 
 @api_view(['GET'])
-def post_community_list(request, cid):
-    posts = Post.objects.filter(community__id=cid)
+def post_community_list(request, id):
+    posts = Post.objects.filter(community__id=id)
     serializer = ViewPostSerializer(posts, many=True)
     return Response(serializer.data)
 

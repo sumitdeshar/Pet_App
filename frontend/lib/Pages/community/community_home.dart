@@ -88,7 +88,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
         print('Access token is null');
       }
     } catch (e) {
-      print('Error fetching posts: $e');
+      print('Error fetching posts: ${e.toString()}');
     }
   }
 
