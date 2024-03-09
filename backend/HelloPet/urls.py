@@ -29,8 +29,11 @@ urlpatterns = [
     path('community/', include('community.urls')),
     path('posts/', include('posts.urls')),
     path('products/', include('products.urls')),
+    
     path('symptom/', include('Symptom_Analysis.urls')),
     path('adoption/',include('Adoption_dogs.urls')),
+    path('breed_detection/', include('breed_detection.urls')),
+        
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

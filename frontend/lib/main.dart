@@ -24,6 +24,7 @@ import 'package:get/get.dart';
 import 'package:frontend/Controllers/Popular_product_controller.dart';
 import 'package:frontend/Controllers/Shelter_controller.dart';
 import 'package:frontend/Pages/Home/home_pets.dart';
+import 'package:frontend/breeddt/breed_detection.dart';
 import 'Helper/Dependencies.dart' as dep;
 import 'Routes/route_helper.dart';
 
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Hello Pet',
-      home: MainPetPage(),
+      home: BreedDetectionPage(),
       initialRoute: RouteHelper.initial,
       getPages: RouteHelper.routes,
     );
