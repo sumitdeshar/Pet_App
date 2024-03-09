@@ -88,12 +88,15 @@ WSGI_APPLICATION = 'HelloPet.wsgi.application'
 
 DATABASES = {
   'default': {
-    'ENGINE': os.environ.get('Engine'),
-    'NAME': os.environ.get('NAME'),
-    'USER': os.environ.get('USER'),
-    'PASSWORD': os.environ.get('PASSWORD'),
-    'HOST': os.environ.get('HOST'),
-    'PORT': os.environ.get('PORT'),
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': os.getenv('PGDATABASE'),
+    'USER': os.getenv('PGUSER'),
+    'PASSWORD': os.getenv('PGPASSWORD'),
+    'HOST': os.getenv('PGHOST'),
+    'PORT': os.getenv('PGPORT', 5432),
+    'OPTIONS': {
+      'sslmode': 'require',
+    },
   }
 }
 
