@@ -33,7 +33,8 @@ INSTALLED_APPS = [
     'posts',
     'products',
     'Adoption_dogs',
-    'Symptom_Analysis'
+    'Symptom_Analysis',
+    'breed_detection',
 ]
 
 
