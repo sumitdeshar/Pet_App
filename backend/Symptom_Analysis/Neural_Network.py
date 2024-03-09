@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score
 
 
 def train_model():
-    dataset_path = 'C:\\Users\\user\\Desktop\\Repositories\\Django\\Machine_Learning\\Symptoms_dataset.csv'
+    dataset_path = 'F:\\Projects\\Pet_App\\backend\\Symptoms_dataset.csv'
     df = pd.read_csv(dataset_path)
     X = df.iloc[:, 1:]  # Symptoms columns
     y = df['Disease']
@@ -43,7 +43,8 @@ def predict_top_3_diseases(user_symptoms):
     model_filename = 'disease_prediction_model.joblib'
     loaded_model = joblib.load(model_filename)
     
-    dataset_path = 'C:\\Users\\user\\Desktop\\Repositories\\Django\\Machine_Learning\\Symptoms_dataset.csv'
+    # dataset_path = 'C:\\Users\\user\\Desktop\\Repositories\\Django\\Machine_Learning\\Symptoms_dataset.csv'
+    dataset_path = 'F:\\Projects\\Pet_App\\backend\\Symptoms_dataset.csv'
     df = pd.read_csv(dataset_path)
     X = df.iloc[:, 1:]  # Symptoms columns
     

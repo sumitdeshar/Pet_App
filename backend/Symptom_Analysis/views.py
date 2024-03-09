@@ -12,7 +12,9 @@ def predict_api(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         test_data = data.get('test_data', [])
+        print(test_data)
         results = predict_top_3_diseases(test_data)
+        print(results)
         return JsonResponse(results, safe=False)
     else:
         return JsonResponse({'error': 'Invalid request method.'})
