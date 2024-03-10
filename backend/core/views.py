@@ -13,14 +13,10 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from .utlis import get_user_id_from_token
 from .models import *
 from .serializers import *
-
-
-
-# Create your views here.
-# def index(request):
-#     return render(request, 'index.html')
 
 
 @api_view(['GET'])
@@ -72,18 +68,17 @@ def get_pet_owner_profile(request):
             user_id = request.user.id
             user_profile = Profile.objects.get(user=user_id)
             profile_serializer = PetOwnerProfileSerializer(user_profile)
-            follower_serializer = FollowerSerializer(user_profile.followers, many=True)
-            following_serializer = FollowingSerializer(user_profile.following, many=True)
-            follower_list = follower_serializer.data
-            following_list = following_serializer.data
-
-            print("Follower List:", follower_list)
-            print("Following List:", following_list)
-            
-            # print(profile_serializer.data)
+            print(profile_serializer.data)
             return Response(profile_serializer.data)
         except Profile.DoesNotExist:
             return Response({"message": "Authenticated user with ID: {}".format(user_id)}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            # Print or log the error message and response content
+            error_message = str(e)
+            print(f"Error: {error_message}")
+            response_content = JSONRenderer().render({"error": error_message})
+            print(f"Response Content: {response_content}")
+            return Response({"error": error_message}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 @csrf_exempt
 @api_view(["POST"])

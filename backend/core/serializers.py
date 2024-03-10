@@ -28,27 +28,15 @@ class PetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pet
         fields = '__all__'
-        
-        
-class FollowerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "username", "first_name", "last_name"]
-
-class FollowingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "username", "first_name", "last_name"]
+    
 
 class PetOwnerProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    followers = FollowerSerializer(many=True, read_only=True)
-    following = FollowingSerializer(many=True, read_only=True)
     pets = PetSerializer(many=True, read_only=True)
 
     class Meta:
         model = Profile
-        fields = ['user', 'bio', 'photo', 'followers', 'following', 'cover_photo', 'dob', 'pets']
+        fields = ['user', 'bio', 'photo', 'dob', 'pets']
         
 
 class UpdateUserSerializer(serializers.ModelSerializer):
