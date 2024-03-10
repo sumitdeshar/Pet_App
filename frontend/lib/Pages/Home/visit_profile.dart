@@ -240,27 +240,25 @@ class VisitProfileState extends State<VisitProfile> {
   }
 
   Widget _FollowSection() {
-    final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
+    // final profile = ownProfile.isNotEmpty ? ownProfile[0] : null;
 
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+      child: const Padding(
+        padding: EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('Following'),
             Text(
-              '${profile != null ? profile.following.length : 0}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              'Following:  57',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text('Followers'),
             Text(
-              '${profile != null ? profile.followers.length : 0}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              'Followers:  49',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ],
         ),

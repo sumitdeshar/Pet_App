@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/Community/create_community.dart';
+import 'package:frontend/Pages/Home/feature_page.dart';
 import 'package:frontend/Pages/Home/home_page.dart';
 import 'package:frontend/Pages/Home/owner_profile.dart';
 import 'package:frontend/Pages/Home/search_user.dart';
@@ -22,6 +23,11 @@ class CustomBottomNavBar extends StatelessWidget {
           icon: Icon(Icons.add_outlined, color: Colors.grey, size: 24.0),
         ),
         BottomNavigationBarItem(
+          label: 'Features',
+          icon: Icon(Icons.widgets,
+              color: Colors.grey, size: 24.0), // New icon for Features
+        ),
+        BottomNavigationBarItem(
           label: 'Profile',
           icon: Icon(Icons.person, color: Colors.grey, size: 24.0),
         ),
@@ -35,7 +41,6 @@ class CustomBottomNavBar extends StatelessWidget {
             );
             break;
           case 1:
-            // Navigate to the search page
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Search()),
@@ -52,9 +57,15 @@ class CustomBottomNavBar extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const OwnerProfile(
-                        title: 'Profile',
-                      )),
+                  builder: (context) =>
+                      FeaturesPage()), // Navigate to FeaturesPage
+            );
+            break;
+          case 4:
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const OwnerProfile(title: 'Profile')),
             );
             break;
         }

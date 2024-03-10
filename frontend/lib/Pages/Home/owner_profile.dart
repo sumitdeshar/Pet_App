@@ -231,8 +231,6 @@ class _OwnerProfileState extends State<OwnerProfile> {
                                             pets: [],
                                             bio: "",
                                             photo: "",
-                                            followers: [],
-                                            following: [],
                                           ),
                                   ),
                                 ),

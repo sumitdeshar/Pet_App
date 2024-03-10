@@ -4,6 +4,7 @@ import 'package:frontend/Constants/token_auth.dart';
 import 'package:frontend/Models/community_model.dart';
 import 'package:frontend/Models/post_model.dart';
 import 'package:frontend/Pages/posts/create_post.dart';
+import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:frontend/Widgets/appbar.dart';
@@ -137,6 +138,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
           ],
         ),
       ),
+      bottomNavigationBar: CustomBottomNavBar(),
     );
   }
 
