@@ -5,10 +5,10 @@ class SymptomList extends StatelessWidget {
   final void Function(String symptom) onRemove; // Add onRemove parameter
 
   const SymptomList({
-    Key? key,
+    super.key,
     required this.selectedSymptoms,
     required this.onRemove,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class SymptomList extends StatelessWidget {
           return ListTile(
             title: Text(symptom),
             trailing: IconButton(
-              icon: Icon(Icons.clear),
+              icon: const Icon(Icons.clear),
               onPressed: () => onRemove(
                   symptom), // Call onRemove when the clear button is pressed
             ),

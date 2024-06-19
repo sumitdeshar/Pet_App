@@ -13,8 +13,7 @@ import 'package:intl/intl.dart';
 class CommunityProfilePage extends StatefulWidget {
   final int communityId;
 
-  const CommunityProfilePage({Key? key, required this.communityId})
-      : super(key: key);
+  const CommunityProfilePage({super.key, required this.communityId});
 
   @override
   _CommunityProfilePageState createState() => _CommunityProfilePageState();
@@ -93,6 +92,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Profile'),
@@ -110,10 +110,10 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
                 _buildcommunityInfo(),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(Icons.add),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4),
                       Text('Join'),
                     ],
                   ),
@@ -121,7 +121,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
               ],
             ),
             const SizedBox(height: 8),
-            Text('Members:'),
+            const Text('Members:'),
             const SizedBox(height: 8),
             if (communityData != null)
               for (int memberId in communityData!.members)
@@ -131,14 +131,14 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
             const SizedBox(height: 16),
             const Text(
               'Posts:',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             viewPosts(),
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 
@@ -156,7 +156,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             communityData?.name ?? '',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Text(
             communityData?.description ?? '',
@@ -234,27 +234,27 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
                 //   MaterialPageRoute(builder: (context) => const Create_Post()),
                 // );
               },
-              child: Text(
-                'Create Post',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
-              ),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-                padding: MaterialStateProperty.all(const EdgeInsets.symmetric(
+                backgroundColor: WidgetStateProperty.all(Colors.blue),
+                padding: WidgetStateProperty.all(const EdgeInsets.symmetric(
                     vertical: 12.0, horizontal: 15.0)),
-                side: MaterialStateProperty.all(
+                side: WidgetStateProperty.all(
                   const BorderSide(
                     width: 2.0, // Adjust border width
                     color: Colors.blue,
                   ),
                 ),
-                shape: MaterialStateProperty.all(
+                shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
+                ),
+              ),
+              child: const Text(
+                'Create Post',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
                 ),
               ),
             ),
@@ -278,7 +278,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
 
     return Card(
       margin: const EdgeInsets.all(8.0),
-      color: Color.fromARGB(255, 160, 209, 233),
+      color: const Color.fromARGB(255, 160, 209, 233),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -288,7 +288,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${post.author.isNotEmpty ? post.author.first.username.toUpperCase() : ''}',
+                  post.author.isNotEmpty ? post.author.first.username.toUpperCase() : '',
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 22,
@@ -314,7 +314,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 176, 227, 226),
+                    color: const Color.fromARGB(255, 176, 227, 226),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Padding(
@@ -410,11 +410,11 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
         MediaQuery.of(context).size.width * containerWidthPercentage;
     if (imagePath.startsWith('http')) {
       return Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
         ),
         child: CachedNetworkImage(
           imageUrl: imagePath,
@@ -426,12 +426,12 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
       );
     } else {
       return Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey), // Border color
           borderRadius:
-              BorderRadius.all(Radius.circular(10.0)), // Border radius
+              const BorderRadius.all(Radius.circular(10.0)), // Border radius
         ),
         child: Image.asset(
           'images/default_pp.jpg',

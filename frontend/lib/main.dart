@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Pet App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: LoginPage(), // Pass the title here (title: 'Pet App')
+      home: const LoginPage(), // Pass the title here (title: 'Pet App')
     );
   }
 }

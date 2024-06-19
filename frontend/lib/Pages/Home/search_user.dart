@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/Models/searched_user.dart'; // import your UserProfile model
 
 class Search extends StatefulWidget {
-  const Search({Key? key}) : super(key: key);
+  const Search({super.key});
 
   @override
   _SearchState createState() => _SearchState();
@@ -18,7 +18,7 @@ class _SearchState extends State<Search> {
   List<UserProfile> _userProfiles = [];
 
   Future<void> _performSearch(String searchTerm) async {
-    String apiUrl = 'http://10.0.2.2:8000/search_user';
+    String apiUrl = 'http://10.0.0.2:8000/search_user';
 
     try {
       final response = await http.post(
@@ -95,7 +95,7 @@ class _SearchState extends State<Search> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 }
@@ -104,7 +104,7 @@ class UserCard extends StatelessWidget {
   final UserProfile profile;
   final VoidCallback onPressed;
 
-  UserCard({required this.profile, required this.onPressed});
+  const UserCard({super.key, required this.profile, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

@@ -6,12 +6,12 @@ class Adoption {
 
   Adoption({required totalSize, required offset, required List<Dogs>? dogs}) {
     if (totalSize != null) {
-      this._totalSize = totalSize;
+      _totalSize = totalSize;
     }
     if (offset != null) {
-      this._offset = offset;
+      _offset = offset;
     }
-    this._dogs = dogs;
+    _dogs = dogs;
   }
 
   int? get totalSize => _totalSize;
@@ -26,17 +26,17 @@ class Adoption {
     if (json['dogs'] != null) {
       _dogs = <Dogs>[];
       json['dogs'].forEach((v) {
-        _dogs!.add(new Dogs.fromJson(v));
+        _dogs!.add(Dogs.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['totalSize'] = this._totalSize;
-    data['offset'] = this._offset;
-    if (this._dogs != null) {
-      data['dogs'] = this._dogs!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['totalSize'] = _totalSize;
+    data['offset'] = _offset;
+    if (_dogs != null) {
+      data['dogs'] = _dogs!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -68,37 +68,37 @@ class Dogs {
       Training? training,
       Requirements? requirements}) {
     if (name != null) {
-      this._name = name;
+      _name = name;
     }
     if (shelter != null) {
-      this._shelter = shelter;
+      _shelter = shelter;
     }
     if (breed != null) {
-      this._breed = breed;
+      _breed = breed;
     }
     if (img != null) {
-      this._img = img;
+      _img = img;
     }
     if (size != null) {
-      this._size = size;
+      _size = size;
     }
     if (age != null) {
-      this._age = age;
+      _age = age;
     }
     if (personality != null) {
-      this._personality = personality;
+      _personality = personality;
     }
     if (healthStatus != null) {
-      this._healthStatus = healthStatus;
+      _healthStatus = healthStatus;
     }
     if (history != null) {
-      this._history = history;
+      _history = history;
     }
     if (training != null) {
-      this._training = training;
+      _training = training;
     }
     if (requirements != null) {
-      this._requirements = requirements;
+      _requirements = requirements;
     }
   }
 
@@ -134,35 +134,35 @@ class Dogs {
     _age = json['age'];
     _personality = json['personality'];
     _healthStatus = json['health_status'] != null
-        ? new HealthStatus.fromJson(json['health_status'])
+        ? HealthStatus.fromJson(json['health_status'])
         : null;
     _history = json['history'];
     _training = json['training'] != null
-        ? new Training.fromJson(json['training'])
+        ? Training.fromJson(json['training'])
         : null;
     _requirements = json['requirements'] != null
-        ? new Requirements.fromJson(json['requirements'])
+        ? Requirements.fromJson(json['requirements'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this._name;
-    data['shelter'] = this._shelter;
-    data['breed'] = this._breed;
-    data['img'] = this._img;
-    data['size'] = this._size;
-    data['age'] = this._age;
-    data['personality'] = this._personality;
-    if (this._healthStatus != null) {
-      data['health_status'] = this._healthStatus!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = _name;
+    data['shelter'] = _shelter;
+    data['breed'] = _breed;
+    data['img'] = _img;
+    data['size'] = _size;
+    data['age'] = _age;
+    data['personality'] = _personality;
+    if (_healthStatus != null) {
+      data['health_status'] = _healthStatus!.toJson();
     }
-    data['history'] = this._history;
-    if (this._training != null) {
-      data['training'] = this._training!.toJson();
+    data['history'] = _history;
+    if (_training != null) {
+      data['training'] = _training!.toJson();
     }
-    if (this._requirements != null) {
-      data['requirements'] = this._requirements!.toJson();
+    if (_requirements != null) {
+      data['requirements'] = _requirements!.toJson();
     }
     return data;
   }
@@ -176,13 +176,13 @@ class HealthStatus {
   HealthStatus(
       {List<String>? vaccinations, bool? neutered, String? medicalIssues}) {
     if (vaccinations != null) {
-      this._vaccinations = vaccinations;
+      _vaccinations = vaccinations;
     }
     if (neutered != null) {
-      this._neutered = neutered;
+      _neutered = neutered;
     }
     if (medicalIssues != null) {
-      this._medicalIssues = medicalIssues;
+      _medicalIssues = medicalIssues;
     }
   }
 
@@ -200,10 +200,10 @@ class HealthStatus {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['vaccinations'] = this._vaccinations;
-    data['neutered'] = this._neutered;
-    data['medical_issues'] = this._medicalIssues;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['vaccinations'] = _vaccinations;
+    data['neutered'] = _neutered;
+    data['medical_issues'] = _medicalIssues;
     return data;
   }
 }
@@ -214,10 +214,10 @@ class Training {
 
   Training({String? obedience, String? behavior}) {
     if (obedience != null) {
-      this._obedience = obedience;
+      _obedience = obedience;
     }
     if (behavior != null) {
-      this._behavior = behavior;
+      _behavior = behavior;
     }
   }
 
@@ -232,9 +232,9 @@ class Training {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['obedience'] = this._obedience;
-    data['behavior'] = this._behavior;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['obedience'] = _obedience;
+    data['behavior'] = _behavior;
     return data;
   }
 }
@@ -245,10 +245,10 @@ class Requirements {
 
   Requirements({String? idealHome, String? exerciseNeeds}) {
     if (idealHome != null) {
-      this._idealHome = idealHome;
+      _idealHome = idealHome;
     }
     if (exerciseNeeds != null) {
-      this._exerciseNeeds = exerciseNeeds;
+      _exerciseNeeds = exerciseNeeds;
     }
   }
 
@@ -263,9 +263,9 @@ class Requirements {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['ideal_home'] = this._idealHome;
-    data['exercise_needs'] = this._exerciseNeeds;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['ideal_home'] = _idealHome;
+    data['exercise_needs'] = _exerciseNeeds;
     return data;
   }
 }

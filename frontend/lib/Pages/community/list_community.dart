@@ -8,7 +8,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class CommunityList extends StatefulWidget {
-  const CommunityList({Key? key}) : super(key: key);
+  const CommunityList({super.key});
 
   @override
   State<CommunityList> createState() => _CommunityListState();
@@ -58,7 +58,7 @@ class _CommunityListState extends State<CommunityList> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
-            Container(
+            SizedBox(
               height: 500,
               width: 500,
               child: ListView.builder(
@@ -75,7 +75,7 @@ class _CommunityListState extends State<CommunityList> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 
@@ -93,7 +93,7 @@ class CommunityCard extends StatelessWidget {
   final CommunityListModel community;
   final VoidCallback onPressed;
 
-  CommunityCard({required this.community, required this.onPressed});
+  const CommunityCard({super.key, required this.community, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'package:frontend/Utils/Heading_text.dart';
 class PredictionScreen extends StatelessWidget {
   final List<dynamic> predictions;
 
-  PredictionScreen({required this.predictions});
+  const PredictionScreen({super.key, required this.predictions});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class PredictionScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Predictions'),
+        title: const Text('Predictions'),
       ),
       body: ListView.builder(
         itemCount: predictions.length,
@@ -31,12 +31,12 @@ class PredictionScreen extends StatelessWidget {
               CircularPercentIndicator(
                 radius: 200,
                 lineWidth: 25,
-                backgroundColor: Color.fromARGB(255, 122, 179, 232),
+                backgroundColor: const Color.fromARGB(255, 122, 179, 232),
                 percent: accuracy, // Ensure accuracy is between 0 and 1
                 circularStrokeCap: CircularStrokeCap.round,
                 center: Text(
                   "$accuracyPercentage%", // Display the percentage with % symbol
-                  style: TextStyle(fontSize: 45, color: Colors.blue),
+                  style: const TextStyle(fontSize: 45, color: Colors.blue),
                 ),
                 progressColor: Colors.blue[700],
                 animation: true,
@@ -50,7 +50,7 @@ class PredictionScreen extends StatelessWidget {
         onPressed: () {
           Navigator.pop(context); // Navigate back to the previous screen
         },
-        child: Icon(Icons.arrow_back),
+        child: const Icon(Icons.arrow_back),
       ),
     );
   }

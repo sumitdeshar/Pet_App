@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:frontend/Pages/Home/login_page.dart';
 
-final storage = FlutterSecureStorage();
+const storage = FlutterSecureStorage();
 
 class TokenVerification extends StatefulWidget {
   const TokenVerification({super.key});
@@ -37,7 +37,7 @@ class _TokenVerificationState extends State<TokenVerification> {
         // Successfully logged in using the stored token
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => NewsFeed()),
+          MaterialPageRoute(builder: (context) => const NewsFeed()),
         );
       } else {
         // Handle unsuccessful login, e.g., token might be invalid
@@ -61,7 +61,7 @@ class _TokenVerificationState extends State<TokenVerification> {
       // No access token, navigate to login
       // print('NULL');
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+          context, MaterialPageRoute(builder: (context) => const LoginPage()));
     } else {
       // Check if the token is expired
       final bool isTokenExpired = await isAccessTokenExpired(accessToken);
@@ -73,7 +73,7 @@ class _TokenVerificationState extends State<TokenVerification> {
         final String? newAccessToken = await getAccessToken();
         if (newAccessToken == null) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => LoginPage()));
+              context, MaterialPageRoute(builder: (context) => const LoginPage()));
         } else {
           await autoLogin(newAccessToken);
         }

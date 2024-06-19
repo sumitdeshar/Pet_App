@@ -6,6 +6,8 @@ import 'package:frontend/Widgets/appbar.dart';
 import 'dart:convert';
 
 class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
+
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
 }
@@ -19,7 +21,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   String appBarTitle = 'Register';
 
   Future<void> registerUser() async {
-    const String apiUrl = 'http://10.0.2.2:8000/register';
+    const String apiUrl = 'http://10.0.0.2:8000/register';
 
     final Map<String, dynamic> registrationData = {
       'username': _usernameController.text,
@@ -39,8 +41,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
       if (response.statusCode == 200) {
         print('Registration successful');
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const LoginPage()));
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
 
@@ -61,37 +63,37 @@ class _RegistrationPageState extends State<RegistrationPage> {
     return Scaffold(
       appBar: CustomAppBar(title: appBarTitle),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              decoration: const InputDecoration(labelText: 'Username'),
             ),
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Password'),
             ),
             TextField(
               controller: _confirmPasswordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'Confirm Password'),
+              decoration: const InputDecoration(labelText: 'Confirm Password'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: registerUser,
-              child: Text('Register'),
+              child: const Text('Register'),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 }

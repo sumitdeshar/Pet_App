@@ -44,7 +44,7 @@ class _MainShopPageState extends State<MainShopPage> {
                             color: Colors.black54,
                             size: 8,
                           ),
-                          Icon(
+                          const Icon(
                             Icons.arrow_drop_down_rounded,
                             size: 10,
                           )
@@ -56,14 +56,14 @@ class _MainShopPageState extends State<MainShopPage> {
                       child: Container(
                     width: Dimensions.height45,
                     height: Dimensions.height45,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Dimensions.height15),
+                      color: AppColors.mainColor,
+                    ),
                     child: Icon(
                       Icons.search,
                       color: Colors.white,
                       size: Dimensions.height24,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.height15),
-                      color: AppColors.mainColor,
                     ),
                   ))
                 ],
@@ -71,7 +71,7 @@ class _MainShopPageState extends State<MainShopPage> {
             ),
           ),
           //Sliders
-          Expanded(
+          const Expanded(
               child: SingleChildScrollView(
             child: PetAdoptChoices(),
           )),

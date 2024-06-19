@@ -7,13 +7,13 @@ class Shelters_adopt {
   Shelters_adopt(
       {required totalSize, required offset, required List<Shelter>? shelter}) {
     if (totalSize != null) {
-      this._totalSize = totalSize;
+      _totalSize = totalSize;
     }
     if (offset != null) {
-      this._offset = offset;
+      _offset = offset;
     }
     if (shelter != null) {
-      this._shelter = shelter;
+      _shelter = shelter;
     }
   }
 
@@ -29,7 +29,7 @@ class Shelters_adopt {
     if (json['shelter'] != null) {
       _shelter = <Shelter>[];
       json['shelter'].forEach((v) {
-        _shelter!.add(new Shelter.fromJson(v));
+        _shelter!.add(Shelter.fromJson(v));
       });
     }
   }
@@ -53,25 +53,25 @@ class Shelter {
       String? description,
       List<String>? facilities}) {
     if (name != null) {
-      this._name = name;
+      _name = name;
     }
     if (location != null) {
-      this._location = location;
+      _location = location;
     }
     if (rating != null) {
-      this._rating = rating;
+      _rating = rating;
     }
     if (img != null) {
-      this._img = img;
+      _img = img;
     }
     if (contact != null) {
-      this._contact = contact;
+      _contact = contact;
     }
     if (description != null) {
-      this._description = description;
+      _description = description;
     }
     if (facilities != null) {
-      this._facilities = facilities;
+      _facilities = facilities;
     }
   }
 

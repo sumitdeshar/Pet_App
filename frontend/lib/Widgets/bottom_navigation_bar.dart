@@ -6,6 +6,8 @@ import 'package:frontend/Pages/Home/owner_profile.dart';
 import 'package:frontend/Pages/Home/search_user.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
+  const CustomBottomNavBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -37,13 +39,13 @@ class CustomBottomNavBar extends StatelessWidget {
           case 0:
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MyHomePage()),
+              MaterialPageRoute(builder: (context) => const MyHomePage()),
             );
             break;
           case 1:
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Search()),
+              MaterialPageRoute(builder: (context) => const Search()),
             );
             break;
           case 2:
@@ -58,7 +60,7 @@ class CustomBottomNavBar extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      FeaturesPage()), // Navigate to FeaturesPage
+                      const FeaturesPage()), // Navigate to FeaturesPage
             );
             break;
           case 4:

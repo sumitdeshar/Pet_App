@@ -11,7 +11,7 @@ import 'package:frontend/Widgets/Expandable_text.dart';
 
 class AdoptionPetDetails extends StatelessWidget {
   final int pageID;
-  const AdoptionPetDetails({Key? key, required this.pageID}) : super(key: key);
+  const AdoptionPetDetails({super.key, required this.pageID});
 
   @override
   Widget build(BuildContext context) {
@@ -30,22 +30,19 @@ class AdoptionPetDetails extends StatelessWidget {
                   onTap: () {
                     Get.toNamed(RouteHelper.getInitial());
                   },
-                  child: AppIcon(icon: Icons.clear),
+                  child: const AppIcon(icon: Icons.clear),
                 ),
-                AppIcon(
+                const AppIcon(
                   icon: Icons.catching_pokemon,
                   iconColor: AppColors.mainColor,
                 ),
               ],
             ),
             bottom: PreferredSize(
-              preferredSize: Size.fromHeight(20),
+              preferredSize: const Size.fromHeight(20),
               child: Container(
                 padding: EdgeInsets.only(
                     top: Dimensions.height10 / 2, bottom: Dimensions.height10),
-                child: Center(
-                    child:
-                        BigText(size: Dimensions.TextSize26, text: dog.name)),
                 width: double.maxFinite,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -54,6 +51,9 @@ class AdoptionPetDetails extends StatelessWidget {
                     topRight: Radius.circular(Dimensions.height20),
                   ),
                 ),
+                child: Center(
+                    child:
+                        BigText(size: Dimensions.TextSize26, text: dog.name)),
               ),
             ),
             pinned: true,
@@ -61,9 +61,7 @@ class AdoptionPetDetails extends StatelessWidget {
             expandedHeight: 300,
             flexibleSpace: FlexibleSpaceBar(
               background: Image.network(
-                AppConstants.BASE_URL +
-                    AppConstants.ADOPT_PET_URL +
-                    "/" +
+                "${AppConstants.BASE_URL}${AppConstants.ADOPT_PET_URL}/" +
                     dog.img,
                 width: double.maxFinite,
                 fit: BoxFit.cover,
@@ -74,9 +72,9 @@ class AdoptionPetDetails extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  child: ExpandableTextWidget(text: dog.personality),
                   margin: EdgeInsets.only(
                       left: Dimensions.height20, right: Dimensions.height20),
+                  child: ExpandableTextWidget(text: dog.personality),
                 ),
               ],
             ),
@@ -119,14 +117,14 @@ class AdoptionPetDetails extends StatelessWidget {
                 left: Dimensions.height20,
                 right: Dimensions.height20,
               ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Dimensions.height20),
+                color: AppColors.mainColor,
+              ),
               child: BigText(
                 size: 18,
                 text: "Fill Adoption Form",
                 color: Colors.white,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimensions.height20),
-                color: AppColors.mainColor,
               ),
             ),
           ],

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/Models/owner_profile_models.dart';
 
 class UserSearchPage extends StatefulWidget {
-  const UserSearchPage({Key? key}) : super(key: key);
+  const UserSearchPage({super.key});
 
   @override
   _UserSearchPageState createState() => _UserSearchPageState();
@@ -16,7 +16,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
 
   Future<List<User>> searchUsers(String query) async {
     final response =
-        await http.get(Uri.parse('http://10.0.2.2:8000/search/?query=$query'));
+        await http.get(Uri.parse('http://10.0.0.2:8000/search/?query=$query'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['users'];

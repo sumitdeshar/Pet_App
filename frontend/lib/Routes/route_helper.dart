@@ -8,12 +8,12 @@ class RouteHelper {
   static const String Shelters = "/shelter";
   static const String Dogs = "/Dogs";
 
-  static String getInitial() => '$initial';
+  static String getInitial() => initial;
   static String getShelter(int pageID) => '$Shelters?pageID=$pageID';
   static String getDogs(int pageID) => '$Dogs?pageID=$pageID';
 
   static List<GetPage> routes = [
-    GetPage(name: initial, page: () => MainPetPage()),
+    GetPage(name: initial, page: () => const MainPetPage()),
     GetPage(
         name: Shelters,
         page: () {

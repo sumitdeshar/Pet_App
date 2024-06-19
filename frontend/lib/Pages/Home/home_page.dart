@@ -22,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _handleUpvote(int postId) async {
     try {
-      const String baseUrl = "http://10.0.2.2:8000/posts/";
+      const String baseUrl = "http://10.0.0.2:8000/posts/";
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {
@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
-        bottomNavigationBar: CustomBottomNavBar(),
+        bottomNavigationBar: const CustomBottomNavBar(),
       ),
     );
   }
@@ -142,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Card(
       margin: const EdgeInsets.all(8.0),
-      color: Color.fromARGB(255, 160, 209, 233),
+      color: const Color.fromARGB(255, 160, 209, 233),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -152,7 +152,9 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${post.author.isNotEmpty ? post.author.first.username.toUpperCase() : ''}',
+                  post.author.isNotEmpty
+                      ? post.author.first.username.toUpperCase()
+                      : '',
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 22,
@@ -178,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 176, 227, 226),
+                    color: const Color.fromARGB(255, 176, 227, 226),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Padding(

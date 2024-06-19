@@ -28,7 +28,7 @@ class VisitProfileState extends State<VisitProfile> {
 
   Future<void> _fetchProfileData() async {
     try {
-      const String baseUrl = "http://10.0.2.2:8000/'"; //${widget.userId}
+      const String baseUrl = "http://10.0.0.2:8000/"; //${widget.userId}
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {
@@ -126,7 +126,7 @@ class VisitProfileState extends State<VisitProfile> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 
@@ -153,7 +153,7 @@ class VisitProfileState extends State<VisitProfile> {
                     Row(
                       children: [
                         Text(
-                          '${profile.user.firstName}',
+                          profile.user.firstName,
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -163,13 +163,13 @@ class VisitProfileState extends State<VisitProfile> {
                             width:
                                 4), // Add spacing between first name and last name
                         Text(
-                          '${profile.user.lastName}',
+                          profile.user.lastName,
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Spacer(), // Make first name and last name stick to the start
+                        const Spacer(), // Make first name and last name stick to the start
                         SizedBox(
                           width: 80, // Adjust the button size as needed
                           child: ElevatedButton(
@@ -182,27 +182,27 @@ class VisitProfileState extends State<VisitProfile> {
                               //   ),
                               // );
                             },
-                            child: Row(
+                            style: ButtonStyle(
+                              padding: WidgetStateProperty.all(
+                                const EdgeInsets.symmetric(
+                                  vertical: 4,
+                                  horizontal: 8,
+                                ),
+                              ),
+                            ),
+                            child: const Row(
                               children: [
                                 Icon(Icons.add),
                                 SizedBox(width: 4),
                                 Text('Follow'),
                               ],
                             ),
-                            style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                  vertical: 4,
-                                  horizontal: 8,
-                                ),
-                              ),
-                            ),
                           ),
                         ),
                       ],
                     ),
                     Text(
-                      '${profile.user.username}',
+                      profile.user.username,
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -223,7 +223,7 @@ class VisitProfileState extends State<VisitProfile> {
                               ),
                             ),
                             Text(
-                              '${profile.bio}',
+                              profile.bio,
                               style: const TextStyle(fontSize: 16),
                             ),
                           ],
@@ -443,11 +443,11 @@ class VisitProfileState extends State<VisitProfile> {
         MediaQuery.of(context).size.width * containerWidthPercentage;
     if (imagePath.startsWith('http')) {
       return Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
         ),
         child: CachedNetworkImage(
           imageUrl: imagePath,
@@ -459,12 +459,12 @@ class VisitProfileState extends State<VisitProfile> {
       );
     } else {
       return Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey), // Border color
           borderRadius:
-              BorderRadius.all(Radius.circular(10.0)), // Border radius
+              const BorderRadius.all(Radius.circular(10.0)), // Border radius
         ),
         child: Image.asset(
           'images/default_pp.jpg',

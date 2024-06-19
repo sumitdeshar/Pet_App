@@ -7,11 +7,11 @@ import 'package:http/http.dart' as http;
 
 class BreedDetectionPage extends StatefulWidget {
   const BreedDetectionPage({
-    Key? key,
+    super.key,
     this.dogBreed = '',
     this.dogProb = '',
     this.image,
-  }) : super(key: key);
+  });
 
   final String dogBreed;
   final String dogProb;
@@ -110,7 +110,7 @@ class _BreedDetectionPageState extends State<BreedDetectionPage> {
                 image: DecorationImage(
                   image: image != null
                       ? Image.file(image!).image
-                      : AssetImage("assets/Images/dogphoto.jpg"),
+                      : const AssetImage("assets/Images/dogphoto.jpg"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -195,12 +195,12 @@ class _BreedDetectionPageState extends State<BreedDetectionPage> {
             side: const BorderSide(width: 2, color: Colors.grey),
             padding: const EdgeInsets.all(16.0),
           ),
+          onPressed: onPressed,
           child: Icon(
             icon,
             size: 35,
             color: color,
           ),
-          onPressed: onPressed,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 20),
@@ -222,7 +222,7 @@ class ResultPage extends StatefulWidget {
   String accuracy;
   File? initialImage;
 
-  ResultPage({
+  ResultPage({super.key, 
     required this.initialBreed,
     required this.accuracy,
     required this.initialImage,
@@ -313,7 +313,7 @@ class _ResultPageState extends State<ResultPage> {
                 image: DecorationImage(
                   image: image != null
                       ? Image.file(image!).image
-                      : AssetImage("assets/Images/dogphoto.jpg"),
+                      : const AssetImage("assets/Images/dogphoto.jpg"),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -324,9 +324,9 @@ class _ResultPageState extends State<ResultPage> {
             height: size.height * 0.65,
             width: size.width,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(36.0),
                   topRight: Radius.circular(36.0),
                 ),
@@ -398,12 +398,12 @@ class _ResultPageState extends State<ResultPage> {
             side: const BorderSide(width: 2, color: Colors.grey),
             padding: const EdgeInsets.all(16.0),
           ),
+          onPressed: onPressed,
           child: Icon(
             icon,
             size: 35,
             color: color,
           ),
-          onPressed: onPressed,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 20),
@@ -422,7 +422,7 @@ class _ResultPageState extends State<ResultPage> {
 
 void main() {
   runApp(
-    MaterialApp(
+    const MaterialApp(
       home: BreedDetectionPage(),
     ),
   );

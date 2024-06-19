@@ -7,11 +7,11 @@ class SymptomsTitle extends StatelessWidget {
   final String text;
   double size;
   SymptomsTitle({
-    Key? key,
+    super.key,
     this.color = const Color(0xFF332d2b),
     required this.text,
     this.size = 0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

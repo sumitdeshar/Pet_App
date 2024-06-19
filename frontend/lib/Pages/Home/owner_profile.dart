@@ -30,7 +30,7 @@ class _OwnerProfileState extends State<OwnerProfile> {
 
   Future<void> _fetchProfileData() async {
     try {
-      const String baseUrl = "http://10.0.2.2:8000/";
+      const String baseUrl = "http://10.0.0.2:8000/";
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {
@@ -167,7 +167,7 @@ class _OwnerProfileState extends State<OwnerProfile> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 
@@ -194,7 +194,7 @@ class _OwnerProfileState extends State<OwnerProfile> {
                     Row(
                       children: [
                         Text(
-                          '${profile.user.firstName}',
+                          profile.user.firstName,
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -204,13 +204,13 @@ class _OwnerProfileState extends State<OwnerProfile> {
                             width:
                                 4), // Add spacing between first name and last name
                         Text(
-                          '${profile.user.lastName}',
+                          profile.user.lastName,
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Spacer(), // Make first name and last name stick to the start
+                        const Spacer(), // Make first name and last name stick to the start
                         SizedBox(
                           width: 80, // Adjust the button size as needed
                           child: ElevatedButton(
@@ -236,27 +236,27 @@ class _OwnerProfileState extends State<OwnerProfile> {
                                 ),
                               );
                             },
-                            child: Row(
+                            style: ButtonStyle(
+                              padding: WidgetStateProperty.all(
+                                const EdgeInsets.symmetric(
+                                  vertical: 4,
+                                  horizontal: 8,
+                                ),
+                              ),
+                            ),
+                            child: const Row(
                               children: [
                                 Icon(Icons.add),
                                 SizedBox(width: 4),
                                 Text('Edit'),
                               ],
                             ),
-                            style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                  vertical: 4,
-                                  horizontal: 8,
-                                ),
-                              ),
-                            ),
                           ),
                         ),
                       ],
                     ),
                     Text(
-                      '${profile.user.username}',
+                      profile.user.username,
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -277,7 +277,7 @@ class _OwnerProfileState extends State<OwnerProfile> {
                               ),
                             ),
                             Text(
-                              '${profile.bio}',
+                              profile.bio,
                               style: const TextStyle(fontSize: 16),
                             ),
                           ],
@@ -395,7 +395,7 @@ class _OwnerProfileState extends State<OwnerProfile> {
                       builder: (context) => PostDetailScreen(
                         postTitle: post.description,
                         postContent:
-                            "${DateFormat('MMMM d, y').format(post.createdAt)}",
+                            DateFormat('MMMM d, y').format(post.createdAt),
                         imagePath: post.imageUrl,
                       ),
                     ),
@@ -425,7 +425,7 @@ class _OwnerProfileState extends State<OwnerProfile> {
     // Limit the number of characters to be shown in the post content
     const int maxContentLength = 100;
     String truncatedContent = postContent.length > maxContentLength
-        ? postContent.substring(0, maxContentLength) + '...'
+        ? '${postContent.substring(0, maxContentLength)}...'
         : postContent;
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -509,11 +509,11 @@ class _OwnerProfileState extends State<OwnerProfile> {
         MediaQuery.of(context).size.width * containerWidthPercentage;
     if (imagePath.startsWith('http')) {
       return Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
         ),
         child: CachedNetworkImage(
           imageUrl: imagePath,
@@ -525,12 +525,12 @@ class _OwnerProfileState extends State<OwnerProfile> {
       );
     } else {
       return Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey), // Border color
           borderRadius:
-              BorderRadius.all(Radius.circular(10.0)), // Border radius
+              const BorderRadius.all(Radius.circular(10.0)), // Border radius
         ),
         child: Image.asset(
           'images/default_pp.jpg',
@@ -545,8 +545,7 @@ class _OwnerProfileState extends State<OwnerProfile> {
 class EditProfile extends StatefulWidget {
   final PetOwnerProfile petOwnerProfile;
 
-  const EditProfile({Key? key, required this.petOwnerProfile})
-      : super(key: key);
+  const EditProfile({super.key, required this.petOwnerProfile});
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -602,7 +601,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: 'Edit Profile',
       ),
       body: Padding(
@@ -610,33 +609,33 @@ class _EditProfileState extends State<EditProfile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Edit First Name:'),
+            const Text('Edit First Name:'),
             TextFormField(
               controller: firstnameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter your first name ...',
               ),
             ),
             const SizedBox(height: 16),
-            Text('Edit Last Name:'),
+            const Text('Edit Last Name:'),
             TextFormField(
               controller: lastnameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter your last name ...',
               ),
             ),
             const SizedBox(height: 16),
-            Text('Edit BIO:'),
+            const Text('Edit BIO:'),
             TextFormField(
               controller: bioController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter your bio ...',
               ),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _saveChanges,
-              child: Text('Save Changes'),
+              child: const Text('Save Changes'),
             ),
           ],
         ),

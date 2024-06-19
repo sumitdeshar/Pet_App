@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class LoadingPopup extends StatelessWidget {
+  const LoadingPopup({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -8,7 +10,7 @@ class LoadingPopup extends StatelessWidget {
       elevation: 0,
       child: Center(
         child: Container(
-          padding: EdgeInsets.all(0),
+          padding: const EdgeInsets.all(0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10.0),

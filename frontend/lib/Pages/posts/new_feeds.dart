@@ -8,6 +8,8 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class NewsFeed extends StatefulWidget {
+  const NewsFeed({super.key});
+
   @override
   State<NewsFeed> createState() => _NewsFeedState();
 }
@@ -19,7 +21,7 @@ class _NewsFeedState extends State<NewsFeed> {
 
   Future<void> _handleUpvote(int postId) async {
     try {
-      const String baseUrl = "http://10.0.2.2:8000/posts/";
+      const String baseUrl = "http://10.0.0.2:8000/posts/";
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {
@@ -117,7 +119,7 @@ class _NewsFeedState extends State<NewsFeed> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 
@@ -130,7 +132,7 @@ class _NewsFeedState extends State<NewsFeed> {
   Widget _buildPostCard(PostModel post) {
     return Card(
       margin: const EdgeInsets.all(8.0),
-      color: Color.fromARGB(255, 160, 209, 233),
+      color: const Color.fromARGB(255, 160, 209, 233),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -9,6 +9,8 @@ import 'package:frontend/Utils/Symptoms_dropdown.dart';
 import 'package:frontend/Utils/Symptoms_list.dart';
 
 class SymptomAnalysis extends StatefulWidget {
+  const SymptomAnalysis({super.key});
+
   @override
   _SymptomAnalysis createState() => _SymptomAnalysis();
 }
@@ -51,7 +53,7 @@ class _SymptomAnalysis extends State<SymptomAnalysis> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/symptom/Predict'),
+        Uri.parse('http://127.0.0.1:8000/symptom/Predict'),
         body: jsonString,
         headers: {
           'Content-Type': 'application/json',
@@ -83,17 +85,17 @@ class _SymptomAnalysis extends State<SymptomAnalysis> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Symptom Analysis'),
+        title: const Text('Symptom Analysis'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SymptomsTitle(
               text: "The Symptoms Are:",
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             SymptomDropdown(
               hint: 'Select Symptoms',
               value: null,
@@ -108,15 +110,15 @@ class _SymptomAnalysis extends State<SymptomAnalysis> {
                 });
               },
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             SymptomsTitle(text: "Selected Symptoms:"),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             selectedSymptoms.isNotEmpty
                 ? SymptomList(
                     selectedSymptoms: selectedSymptoms,
                     onRemove: onRemoveSymptom,
                   )
-                : Text('No symptoms selected'),
+                : const Text('No symptoms selected'),
           ],
         ),
       ),
@@ -127,7 +129,7 @@ class _SymptomAnalysis extends State<SymptomAnalysis> {
               context: context,
               barrierDismissible: false, // Prevent dismissing during loading
               builder: (BuildContext context) {
-                return LoadingPopup(); // This will dismiss the loading dialog
+                return const LoadingPopup(); // This will dismiss the loading dialog
                 // Show loading popup while predicting
               },
             );
@@ -137,13 +139,13 @@ class _SymptomAnalysis extends State<SymptomAnalysis> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('Please enter a symptom'),
+                  title: const Text('Please enter a symptom'),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text('OK'),
+                      child: const Text('OK'),
                     ),
                   ],
                 );
@@ -151,7 +153,9 @@ class _SymptomAnalysis extends State<SymptomAnalysis> {
             );
           }
         },
-        child: isLoading ? CircularProgressIndicator() : Icon(Icons.check),
+        child: isLoading
+            ? const CircularProgressIndicator()
+            : const Icon(Icons.check),
       ),
     );
   }

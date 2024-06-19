@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:frontend/Controllers/Shelter_controller.dart';
 import 'package:frontend/Routes/route_helper.dart';
 import 'package:frontend/Utils/Colors.dart';
@@ -13,7 +12,7 @@ import '../../Widgets/Big_texts123.dart';
 
 class PopularShelter extends StatelessWidget {
   final int pageID;
-  const PopularShelter({Key? key, required this.pageID}) : super(key: key);
+  const PopularShelter({super.key, required this.pageID});
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +31,7 @@ class PopularShelter extends StatelessWidget {
               decoration: BoxDecoration(
                   image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage(AppConstants.BASE_URL +
-                          AppConstants.SHELTER_URL +
-                          "/" +
+                      image: NetworkImage("${AppConstants.BASE_URL}${AppConstants.SHELTER_URL}/" +
                           shelter.img))),
             ),
           ),
@@ -50,8 +47,8 @@ class PopularShelter extends StatelessWidget {
                     onTap: () {
                       Get.toNamed(RouteHelper.getInitial());
                     },
-                    child: AppIcon(icon: Icons.arrow_back_ios_new)),
-                AppIcon(icon: Icons.shopping_cart_checkout_outlined),
+                    child: const AppIcon(icon: Icons.arrow_back_ios_new)),
+                const AppIcon(icon: Icons.shopping_cart_checkout_outlined),
               ],
             ),
           ),
@@ -117,11 +114,11 @@ class PopularShelter extends StatelessWidget {
                   color: Colors.white),
               child: Row(
                 children: [
-                  Icon(Icons.remove, color: AppColors.signColor),
+                  const Icon(Icons.remove, color: AppColors.signColor),
                   SizedBox(width: Dimensions.height5),
                   BigText(text: "0"),
                   SizedBox(width: Dimensions.height5),
-                  Icon(
+                  const Icon(
                     Icons.add,
                     color: AppColors.signColor,
                   )
@@ -135,13 +132,13 @@ class PopularShelter extends StatelessWidget {
                 left: Dimensions.height20,
                 right: Dimensions.height20,
               ),
-              child: BigText(
-                text: "Fill Adoption Form",
-                color: Colors.white,
-              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Dimensions.height20),
                 color: AppColors.mainColor,
+              ),
+              child: BigText(
+                text: "Fill Adoption Form",
+                color: Colors.white,
               ),
             ),
           ],

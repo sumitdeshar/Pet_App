@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (accessToken != null) {
         final response = await http.post(
-          Uri.parse('http://10.0.2.2:8000/login'),
+          Uri.parse('http://10.0.0.2:8000/login'),
           headers: {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -57,7 +57,8 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => MyHomePage()), //title: 'Owner Profile',
+                builder: (context) =>
+                    const MyHomePage()), //title: 'Owner Profile',
             //title: 'Pet App'
           );
         }
@@ -95,7 +96,8 @@ class _LoginPageState extends State<LoginPage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => RegistrationPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const RegistrationPage()),
                 );
               },
               child: const Text(

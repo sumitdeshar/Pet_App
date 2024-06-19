@@ -7,11 +7,10 @@ class IconAndText extends StatelessWidget {
   final String text;
   final Color iconColor;
   const IconAndText(
-      {Key? key,
+      {super.key,
       required this.icon,
       required this.text,
-      required this.iconColor})
-      : super(key: key);
+      required this.iconColor});
 
   @override
   Widget build(BuildContext context) {

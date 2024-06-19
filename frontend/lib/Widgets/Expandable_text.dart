@@ -5,7 +5,7 @@ import 'package:frontend/Widgets/Small_texts.dart';
 
 class ExpandableTextWidget extends StatefulWidget {
   final String text;
-  const ExpandableTextWidget({Key? key, required this.text}) : super(key: key);
+  const ExpandableTextWidget({super.key, required this.text});
 
   @override
   State<ExpandableTextWidget> createState() => _ExpandableTextWidgetState();
@@ -47,7 +47,7 @@ class _ExpandableTextWidgetState extends State<ExpandableTextWidget> {
                   color: AppColors.paraColor,
                   size: Dimensions.TextSize16,
                   text: hiddentext
-                      ? (firstHalf + "...")
+                      ? ("$firstHalf...")
                       : (firstHalf + secondHalf),
                 ),
                 InkWell(

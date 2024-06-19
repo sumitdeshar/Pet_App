@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class CommunityApplicationPage extends StatefulWidget {
+  const CommunityApplicationPage({super.key});
+
   @override
   _CommunityApplicationPageState createState() =>
       _CommunityApplicationPageState();
@@ -56,7 +58,7 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CommunityList()),
+          MaterialPageRoute(builder: (context) => const CommunityList()),
         );
       } else {
         print(
@@ -102,23 +104,23 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(bottom: 16.0),
+                margin: const EdgeInsets.only(bottom: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Community Name',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     TextFormField(
                       controller: _communityNameController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Enter community name',
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Community names, including capitalization, cannot be changed.',
                       style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
@@ -126,11 +128,11 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(bottom: 16.0),
+                margin: const EdgeInsets.only(bottom: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Community Description',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -138,12 +140,12 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
                     TextFormField(
                       controller: _communityDescriptionController,
                       maxLines: 3,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Enter community description',
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Give context about what your community looks like.',
                       style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
@@ -160,10 +162,10 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
                       });
                     },
                   ),
-                  Text('I accept the community rules'),
+                  const Text('I accept the community rules'),
                 ],
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -171,7 +173,7 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
                     onPressed: () {
                       submitCommunityApplication();
                     },
-                    child: Text('Submit Application'),
+                    child: const Text('Submit Application'),
                   ),
                 ],
               ),

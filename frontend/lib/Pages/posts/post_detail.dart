@@ -9,7 +9,7 @@ class PostDetailScreen extends StatelessWidget {
   final String postContent;
   final String imagePath;
 
-  const PostDetailScreen({
+  const PostDetailScreen({super.key, 
     required this.postTitle,
     required this.postContent,
     required this.imagePath,
@@ -51,11 +51,11 @@ class PostDetailScreen extends StatelessWidget {
         MediaQuery.of(context).size.width * containerWidthPercentage;
     if (imagePath.startsWith('http')) {
       return Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
         ),
         child: CachedNetworkImage(
           imageUrl: imagePath,
@@ -67,12 +67,12 @@ class PostDetailScreen extends StatelessWidget {
       );
     } else {
       return Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey), // Border color
           borderRadius:
-              BorderRadius.all(Radius.circular(10.0)), // Border radius
+              const BorderRadius.all(Radius.circular(10.0)), // Border radius
         ),
         child: Image.asset(
           'images/default_pp.jpg',

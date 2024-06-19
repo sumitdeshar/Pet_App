@@ -7,12 +7,12 @@ class SymptomDropdown extends StatefulWidget {
   final ValueChanged<String?> onChanged;
 
   const SymptomDropdown({
-    Key? key,
+    super.key,
     this.hint = 'Select Symptoms',
     this.value,
     required this.symptoms,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   _SymptomDropdownState createState() => _SymptomDropdownState();
@@ -53,7 +53,7 @@ class _SymptomDropdownState extends State<SymptomDropdown> {
 
   Widget _buildDropdownList() {
     if (_filteredSymptoms.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     return Material(
@@ -61,7 +61,7 @@ class _SymptomDropdownState extends State<SymptomDropdown> {
       child: SizedBox(
         height: 200,
         child: ListView.builder(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           itemCount: _filteredSymptoms.length,
           itemBuilder: (BuildContext context, int index) {
             final symptom = _filteredSymptoms[index];
@@ -93,7 +93,7 @@ class _SymptomDropdownState extends State<SymptomDropdown> {
           },
           decoration: InputDecoration(
             hintText: widget.hint,
-            suffixIcon: Icon(Icons.search),
+            suffixIcon: const Icon(Icons.search),
           ),
         ),
         _buildDropdownList(),

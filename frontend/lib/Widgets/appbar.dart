@@ -6,8 +6,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showBackButton;
 
   const CustomAppBar(
-      {Key? key, required this.title, this.showBackButton = false})
-      : super(key: key);
+      {super.key, required this.title, this.showBackButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: 50,
       leading: showBackButton
           ? IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -43,5 +42,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(50);
+  Size get preferredSize => const Size.fromHeight(50);
 }

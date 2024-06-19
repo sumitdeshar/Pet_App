@@ -4,6 +4,8 @@ import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/breeddt/breed_detection.dart';
 
 class FeaturesPage extends StatelessWidget {
+  const FeaturesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,13 +23,13 @@ class FeaturesPage extends StatelessWidget {
                   context,
                   Icons.healing,
                   'Symptom Analysis',
-                  SymptomAnalysisScreen(),
+                  const SymptomAnalysisScreen(),
                 ),
                 _buildFeatureBox(
                   context,
                   Icons.pets,
                   'Breed Detection',
-                  BreedDetectionPage(),
+                  const BreedDetectionPage(),
                 ),
               ],
             ),
@@ -39,20 +41,20 @@ class FeaturesPage extends StatelessWidget {
                   context,
                   Icons.home,
                   'Adoption and Shelter',
-                  AdoptionScreen(),
+                  const AdoptionScreen(),
                 ),
                 _buildFeatureBox(
                   context,
                   Icons.notifications,
                   'Scheduling',
-                  SchedulingScreen(),
+                  const SchedulingScreen(),
                 ),
               ],
             ),
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 
@@ -118,41 +120,49 @@ class FeaturesPage extends StatelessWidget {
 
 // Replace these with your actual screen widgets
 class SymptomAnalysisScreen extends StatelessWidget {
+  const SymptomAnalysisScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Symptom Analysis')),
-      body: Center(child: Text('Symptom Analysis Screen')),
+      appBar: AppBar(title: const Text('Symptom Analysis')),
+      body: const Center(child: Text('Symptom Analysis Screen')),
     );
   }
 }
 
 class BreedDetectionScreen extends StatelessWidget {
+  const BreedDetectionScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Breed Detection')),
-      body: Center(child: Text('Breed Detection Screen')),
+      appBar: AppBar(title: const Text('Breed Detection')),
+      body: const Center(child: Text('Breed Detection Screen')),
     );
   }
 }
 
 class AdoptionScreen extends StatelessWidget {
+  const AdoptionScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Adoption and Shelter')),
-      body: Center(child: Text('Adoption and Shelter Screen')),
+      appBar: AppBar(title: const Text('Adoption and Shelter')),
+      body: const Center(child: Text('Adoption and Shelter Screen')),
     );
   }
 }
 
 class SchedulingScreen extends StatelessWidget {
+  const SchedulingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Scheduling')),
-      body: Center(child: Text('Scheduling Screen')),
+      appBar: AppBar(title: const Text('Scheduling')),
+      body: const Center(child: Text('Scheduling Screen')),
     );
   }
 }

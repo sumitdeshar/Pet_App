@@ -11,7 +11,7 @@ import 'package:frontend/Pages/Community/community_home.dart';
 class Create_Post extends StatefulWidget {
   final int communityId;
 
-  const Create_Post({Key? key, required this.communityId}) : super(key: key);
+  const Create_Post({super.key, required this.communityId});
 
   @override
   State<Create_Post> createState() => _Create_PostState();
@@ -25,13 +25,13 @@ class _Create_PostState extends State<Create_Post> {
 
   Future<void> _createPost() async {
     try {
-      const String baseUrl = "http://10.0.2.2:8000/posts/create";
+      const String baseUrl = "http://10.0.0.2:8000/posts/create";
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {
         print(widget.communityId);
 
-        String content = await postTextController.text;
+        String content = postTextController.text;
 
         var request = http.MultipartRequest('POST', Uri.parse(baseUrl))
           ..headers['Authorization'] = 'Bearer $accessToken'
@@ -102,7 +102,7 @@ class _Create_PostState extends State<Create_Post> {
         padding: const EdgeInsets.all(16.0),
         child: createPosts(),
       ),
-      bottomNavigationBar: CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 
@@ -159,8 +159,8 @@ class _Create_PostState extends State<Create_Post> {
                 icon: const Icon(Icons.image),
                 label: const Text('Gallery'),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
-                  onPrimary: Colors.white,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
@@ -177,8 +177,8 @@ class _Create_PostState extends State<Create_Post> {
                 icon: const Icon(Icons.camera),
                 label: const Text('Camera'),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
-                  onPrimary: Colors.white,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),

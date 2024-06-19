@@ -12,15 +12,15 @@ class _CommunityPageState extends State<CommunityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Community'),
+        title: const Text('Community'),
       ),
       body: Column(
         children: [
           // Create Post Container
           Container(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             color: Colors.grey[200],
-            child: Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -63,12 +63,12 @@ class CommunityPost {
 class CommunityPostCard extends StatelessWidget {
   final CommunityPost post;
 
-  CommunityPostCard({required this.post});
+  const CommunityPostCard({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -79,25 +79,26 @@ class CommunityPostCard extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   post.title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   'Posted by ${post.username}',
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   post.content,
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -118,36 +119,31 @@ class CommunityPostCard extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 20),
-        SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 14)),
+        const SizedBox(width: 4),
+        Text(label, style: const TextStyle(fontSize: 14)),
       ],
     );
   }
 }
 
-// Sample data for community posts
 List<CommunityPost> communityPosts = [
   CommunityPost(
     title: 'Exciting News!',
     username: 'user123',
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-    imageUrl:
-        'https://www.pinterest.com/pin/21251429480747181/', // Replace with actual image URL
+    imageUrl: 'https://www.pinterest.com/pin/21251429480747181/',
   ),
   CommunityPost(
     title: 'New Pet Photos!',
     username: 'petlover45',
     content: 'Check out these adorable pictures of my pets! 🐾',
-    imageUrl:
-        'https://www.pinterest.com/pin/21251429480747181/', // Replace with actual image URL
+    imageUrl: 'https://www.pinterest.com/pin/21251429480747181/',
   ),
   CommunityPost(
     title: 'Tech Talk',
     username: 'techguru',
     content:
         'Discussing the latest trends in technology. What are your thoughts?',
-    imageUrl:
-        'https://www.pinterest.com/pin/21251429480747181/', // Replace with actual image URL
+    imageUrl: 'https://www.pinterest.com/pin/21251429480747181/',
   ),
-  // Add more posts as needed
 ];

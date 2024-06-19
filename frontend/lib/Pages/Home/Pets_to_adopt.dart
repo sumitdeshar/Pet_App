@@ -13,7 +13,7 @@ import 'package:frontend/Widgets/Icon_Text.dart';
 import 'package:frontend/Widgets/Small_texts.dart';
 
 class PetAdoptChoices extends StatefulWidget {
-  const PetAdoptChoices({Key? key}) : super(key: key);
+  const PetAdoptChoices({super.key});
 
   @override
   State<PetAdoptChoices> createState() => _PetAdoptChoicesState();
@@ -22,8 +22,8 @@ class PetAdoptChoices extends StatefulWidget {
 class _PetAdoptChoicesState extends State<PetAdoptChoices> {
   PageController pageController = PageController(viewportFraction: 0.85);
   var _currPageValue = 0.0;
-  double _scaleFactor = 0.8;
-  double _height = Dimensions.pageViewContainer;
+  final double _scaleFactor = 0.8;
+  final double _height = Dimensions.pageViewContainer;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
       children: [
         GetBuilder<ShelterController>(builder: (popularPets) {
           return popularPets.isLoaded
-              ? Container(
+              ? SizedBox(
                   // color: Colors.red,
                   height: Dimensions.pageView,
                   child: PageView.builder(
@@ -60,7 +60,7 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
                             position, popularPets.shelterList[position]);
                       }),
                 )
-              : CircularProgressIndicator(
+              : const CircularProgressIndicator(
                   color: AppColors.mainColor,
                 );
         }),
@@ -69,7 +69,7 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
             dotsCount: popularPets.shelterList.isEmpty
                 ? 1
                 : popularPets.shelterList.length,
-            position: _currPageValue,
+            position: _currPageValue.round(),
             decorator: DotsDecorator(
               size: const Size.square(9.0),
               activeColor: AppColors.mainColor,
@@ -93,7 +93,7 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
                   width: Dimensions.height10,
                 ),
                 Container(
-                    margin: EdgeInsets.only(bottom: 3),
+                    margin: const EdgeInsets.only(bottom: 3),
                     child: SmallText(text: "Recommended For You"))
               ]),
         ),
@@ -103,7 +103,7 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
         GetBuilder<PopularProductController>(builder: (Avaliable) {
           return Avaliable.isLoaded
               ? ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: Avaliable.popularProductList.length,
                   itemBuilder: (context, index) {
@@ -128,9 +128,7 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
                                     image: DecorationImage(
                                         fit: BoxFit.cover,
                                         image: NetworkImage(
-                                            AppConstants.BASE_URL +
-                                                AppConstants.ADOPT_PET_URL +
-                                                "/" +
+                                            "${AppConstants.BASE_URL}${AppConstants.ADOPT_PET_URL}/" +
                                                 Avaliable
                                                     .popularProductList[index]
                                                     .img!))),
@@ -171,7 +169,7 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
                                             height: Dimensions.height10,
                                           ),
                                           //Icons And Locations
-                                          Row(
+                                          const Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceAround,
                                             children: [
@@ -201,14 +199,14 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
                           ),
                         ));
                   })
-              : CircularProgressIndicator(color: AppColors.mainColor);
+              : const CircularProgressIndicator(color: AppColors.mainColor);
         })
       ],
     );
   }
 
   Widget _buildPageItem(int index, sheltherList) {
-    Matrix4 matrix = new Matrix4.identity();
+    Matrix4 matrix = Matrix4.identity();
     if (index == _currPageValue.floor()) {
       var currScale = 1 - (_currPageValue - index) * (1 - _scaleFactor);
       var currTans = _height * (1 - currScale) / 2;
@@ -244,13 +242,14 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
                   left: Dimensions.height10, right: Dimensions.height10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Dimensions.height30),
-                color: index.isEven ? Color(0xFF69c5df) : Color(0xFF9294cc),
+                color: index.isEven
+                    ? const Color(0xFF69c5df)
+                    : const Color(0xFF9294cc),
                 image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: NetworkImage(AppConstants.BASE_URL +
-                        AppConstants.SHELTER_URL +
-                        "/" +
-                        sheltherList.img)),
+                    image: NetworkImage(
+                        "${AppConstants.BASE_URL}${AppConstants.SHELTER_URL}/" +
+                            sheltherList.img)),
               ),
             ),
           ),
@@ -265,7 +264,7 @@ class _PetAdoptChoicesState extends State<PetAdoptChoices> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Dimensions.height20),
                   color: Colors.white,
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Color(0xFFe8e8e8),
                       blurRadius: 5.0,
