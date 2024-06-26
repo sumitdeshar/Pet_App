@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/Utils/appConstants.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Pages/Symptoms/Predictions.dart';
 import 'package:frontend/Utils/loading_popup.dart';
@@ -53,7 +54,7 @@ class _SymptomAnalysis extends State<SymptomAnalysis> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/symptom/Predict'),
+        Uri.parse('${AppConstants.BASE_URL}/symptom/Predict'),
         body: jsonString,
         headers: {
           'Content-Type': 'application/json',

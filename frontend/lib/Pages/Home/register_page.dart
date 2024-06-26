@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/Home/login_page.dart';
+import 'package:frontend/Utils/appConstants.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Widgets/appbar.dart';
@@ -21,7 +22,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   String appBarTitle = 'Register';
 
   Future<void> registerUser() async {
-    const String apiUrl = 'http://10.0.0.2:8000/register';
+    const String apiUrl = '${AppConstants.BASE_URL}/register';
 
     final Map<String, dynamic> registrationData = {
       'username': _usernameController.text,

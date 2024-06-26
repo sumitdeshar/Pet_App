@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/token_auth.dart';
+import 'package:frontend/Utils/appConstants.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/Pages/Community/list_community.dart';
 import 'package:http/http.dart' as http;
@@ -30,7 +31,7 @@ class _CommunityApplicationPageState extends State<CommunityApplicationPage> {
 
     try {
       final http.Response response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/community/create'),
+        Uri.parse('${AppConstants.BASE_URL}/community/create'),
         body: jsonEncode(requestData),
         headers: {
           'Content-Type': 'application/json',

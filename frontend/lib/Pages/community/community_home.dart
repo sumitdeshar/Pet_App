@@ -4,6 +4,7 @@ import 'package:frontend/Constants/token_auth.dart';
 import 'package:frontend/Models/community_model.dart';
 import 'package:frontend/Models/post_model.dart';
 import 'package:frontend/Pages/posts/create_post.dart';
+import 'package:frontend/Utils/appConstants.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -35,7 +36,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
   Future<void> fetchCommunity() async {
     final String? accessToken = await getAccessToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:8000/community/${widget.communityId}'),
+      Uri.parse('${AppConstants.BASE_URL}/community/${widget.communityId}'),
       headers: {
         'Authorization': 'Bearer $accessToken',
       },
@@ -288,7 +289,9 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  post.author.isNotEmpty ? post.author.first.username.toUpperCase() : '',
+                  post.author.isNotEmpty
+                      ? post.author.first.username.toUpperCase()
+                      : '',
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 22,

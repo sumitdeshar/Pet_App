@@ -6,6 +6,7 @@ import 'package:frontend/Pages/Home/register_page.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:frontend/Utils/appConstants.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,9 +35,10 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final String? accessToken = await getAccessToken();
 
-      if (accessToken != null) {
+      if (accessToken == null) {
+        print('trying to login');
         final response = await http.post(
-          Uri.parse('http://10.0.0.2:8000/login'),
+          Uri.parse('${AppConstants.BASE_URL}/login'),
           headers: {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -46,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
             'password': _passwordController.text,
           },
         );
+        print('login attempted');
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
           final String accessToken = responseData['access'];

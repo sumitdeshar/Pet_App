@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/Home/visit_profile.dart';
+import 'package:frontend/Utils/appConstants.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +19,7 @@ class _SearchState extends State<Search> {
   List<UserProfile> _userProfiles = [];
 
   Future<void> _performSearch(String searchTerm) async {
-    String apiUrl = 'http://10.0.0.2:8000/search_user';
+    String apiUrl = '${AppConstants.BASE_URL}/search_user';
 
     try {
       final response = await http.post(

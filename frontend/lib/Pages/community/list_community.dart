@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Constants/token_auth.dart';
 import 'package:frontend/Models/community_list.dart';
 import 'package:frontend/Pages/Community/community_home.dart';
+import 'package:frontend/Utils/appConstants.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'dart:convert';
@@ -27,7 +28,7 @@ class _CommunityListState extends State<CommunityList> {
   Future<void> fetchCommunities() async {
     final String? accessToken = await getAccessToken();
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:8000/community/'),
+      Uri.parse('${AppConstants.BASE_URL}/community/'),
       headers: {
         'Authorization': 'Bearer $accessToken',
       },

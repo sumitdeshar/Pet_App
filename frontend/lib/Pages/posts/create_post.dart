@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:frontend/Constants/token_auth.dart';
+import 'package:frontend/Utils/appConstants.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +26,7 @@ class _Create_PostState extends State<Create_Post> {
 
   Future<void> _createPost() async {
     try {
-      const String baseUrl = "http://10.0.0.2:8000/posts/create";
+      const String baseUrl = "${AppConstants.BASE_URL}/posts/create";
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {

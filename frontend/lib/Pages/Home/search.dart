@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/Utils/appConstants.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -15,8 +16,8 @@ class _UserSearchPageState extends State<UserSearchPage> {
   List<User> searchResults = [];
 
   Future<List<User>> searchUsers(String query) async {
-    final response =
-        await http.get(Uri.parse('http://10.0.0.2:8000/search/?query=$query'));
+    final response = await http
+        .get(Uri.parse('${AppConstants.BASE_URL}/search/?query=$query'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['users'];

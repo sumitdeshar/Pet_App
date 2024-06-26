@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/Models/owner_profile_models.dart';
 import 'package:frontend/Pages/Community/list_community.dart';
+import 'package:frontend/Utils/appConstants.dart';
 import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/Constants/token_auth.dart';
@@ -28,7 +29,7 @@ class VisitProfileState extends State<VisitProfile> {
 
   Future<void> _fetchProfileData() async {
     try {
-      const String baseUrl = "http://10.0.0.2:8000/"; //${widget.userId}
+      const String baseUrl = "${AppConstants.BASE_URL}"; //${widget.userId}
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {
