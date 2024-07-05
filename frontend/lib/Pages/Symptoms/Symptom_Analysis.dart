@@ -9,6 +9,8 @@ import 'package:frontend/Utils/Heading_text.dart';
 import 'package:frontend/Utils/Symptoms_dropdown.dart';
 import 'package:frontend/Utils/Symptoms_list.dart';
 
+import '../../Widgets/appbar.dart';
+
 class SymptomAnalysis extends StatefulWidget {
   const SymptomAnalysis({super.key});
 
@@ -20,6 +22,7 @@ class _SymptomAnalysis extends State<SymptomAnalysis> {
   List<String> symptoms = [];
   List<String> selectedSymptoms = [];
   bool isLoading = false;
+  var appBarTitle = 'Symptom Analysis';
 
   @override
   void initState() {
@@ -85,9 +88,7 @@ class _SymptomAnalysis extends State<SymptomAnalysis> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Symptom Analysis'),
-      ),
+      appBar: CustomAppBar(title: appBarTitle),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

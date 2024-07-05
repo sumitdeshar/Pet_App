@@ -3,6 +3,9 @@ import 'package:frontend/Widgets/bottom_navigation_bar.dart';
 import 'package:frontend/Widgets/appbar.dart';
 import 'package:frontend/breeddt/breed_detection.dart';
 
+import '../Symptoms/Symptom_Analysis.dart';
+import 'Pets_to_adopt.dart';
+
 class FeaturesPage extends StatelessWidget {
   const FeaturesPage({super.key});
 
@@ -23,7 +26,7 @@ class FeaturesPage extends StatelessWidget {
                   context,
                   Icons.healing,
                   'Symptom Analysis',
-                  const SymptomAnalysisScreen(),
+                  const SymptomAnalysis(),
                 ),
                 _buildFeatureBox(
                   context,
@@ -41,7 +44,7 @@ class FeaturesPage extends StatelessWidget {
                   context,
                   Icons.home,
                   'Adoption and Shelter',
-                  const AdoptionScreen(),
+                  const PetAdoptChoices(),
                 ),
                 _buildFeatureBox(
                   context,

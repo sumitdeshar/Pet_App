@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:frontend/Utils/Heading_text.dart';
 
+import '../../Widgets/appbar.dart';
+
 class PredictionScreen extends StatelessWidget {
   final List<dynamic> predictions;
 
@@ -10,11 +12,10 @@ class PredictionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print(predictions); // Print predictions in the terminal
+    var appBarTitle = 'Predictions';
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Predictions'),
-      ),
+      appBar: CustomAppBar(title: appBarTitle),
       body: ListView.builder(
         itemCount: predictions.length,
         itemBuilder: (context, index) {

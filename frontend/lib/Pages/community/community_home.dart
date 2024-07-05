@@ -59,7 +59,7 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> {
 
   Future<void> fetchPosts() async {
     try {
-      const String baseUrl = "http://10.0.2.2:8000/posts/";
+      const String baseUrl = "${AppConstants.BASE_URL}/posts";
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {

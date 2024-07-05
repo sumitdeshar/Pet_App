@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> fetchPosts() async {
     try {
-      const String baseUrl = "http://10.0.2.2:8000/posts/";
+      const String baseUrl = "${AppConstants.BASE_URL}/posts";
       final String? accessToken = await getAccessToken();
 
       if (accessToken != null) {
@@ -103,25 +103,23 @@ class _MyHomePageState extends State<MyHomePage> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: CustomAppBar(title: appBarTitle),
-        body: Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Hot Posts',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Hot Posts',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 16),
-                viewPosts(),
-                const SizedBox(height: 16),
-              ],
-            ),
+              ),
+              const SizedBox(height: 16),
+              viewPosts(),
+              const SizedBox(height: 16),
+            ],
           ),
         ),
         bottomNavigationBar: const CustomBottomNavBar(),
@@ -130,10 +128,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget viewPosts() {
-    return SingleChildScrollView(
-      child: Column(
-        children: posts.map((post) => _buildPostCard(post)).toList(),
-      ),
+    return Column(
+      children: posts.map((post) => _buildPostCard(post)).toList(),
     );
   }
 

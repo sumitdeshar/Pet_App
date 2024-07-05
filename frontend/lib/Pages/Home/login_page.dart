@@ -32,15 +32,18 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   LoginAuth() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
-      final String? accessToken = await getAccessToken();
+      String? accessToken = await getAccessToken();
 
       if (accessToken == null) {
         print('trying to login');
         final response = await http.post(
           Uri.parse('${AppConstants.BASE_URL}/login'),
           headers: {
-            'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: {
@@ -49,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
           },
         );
         print('login attempted');
+        print(response.body);
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
           final String accessToken = responseData['access'];
@@ -64,10 +68,30 @@ class _LoginPageState extends State<LoginPage> {
                     const MyHomePage()), //title: 'Owner Profile',
             //title: 'Pet App'
           );
+        } else {
+          print('Login failed with status: ${response.statusCode}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login failed: ${response.body}'),
+            ),
+          );
         }
+      } else {
+        print('Already logged in with token: $accessToken');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  const MyHomePage()), //title: 'Owner Profile',
+          //title: 'Pet App'
+        );
       }
     } catch (e) {
       print('Error: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -114,13 +138,15 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Loading!'),
-                    duration: Duration(seconds: 3),
-                  ),
-                );
-                LoginAuth();
+                if (!isLoading) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Loading!'),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                  LoginAuth();
+                }
               },
               child: const Text('Login'),
             ),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:frontend/Pages/posts/new_feeds.dart';
 import 'package:http/http.dart' as http;
+import 'package:universal_html/js.dart';
 import 'dart:convert';
-import 'package:frontend/Pages/Home/login_page.dart';
+
+import '../Pages/Home/home_page.dart';
+import '../Pages/Home/login_page.dart';
+import '../Utils/appConstants.dart';
 
 const storage = FlutterSecureStorage();
 
@@ -15,43 +18,17 @@ class TokenVerification extends StatefulWidget {
 }
 
 class _TokenVerificationState extends State<TokenVerification> {
-  // ... existing code ...
-
   @override
   void initState() {
     super.initState();
     checkAccessToken();
   }
 
-  Future<void> autoLogin(String accessToken) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/login'), // Adjust the URL as needed
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        // Successfully logged in using the stored token
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const NewsFeed()),
-        );
-      } else {
-        // Handle unsuccessful login, e.g., token might be invalid
-        print('Auto login failed: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Handle login request errors
-      print('Error during auto login: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
   }
 
   Future<void> checkAccessToken() async {
@@ -59,9 +36,8 @@ class _TokenVerificationState extends State<TokenVerification> {
 
     if (accessToken == null) {
       // No access token, navigate to login
-      // print('NULL');
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const LoginPage()));
+      Navigator.pushReplacement(context as BuildContext,
+          MaterialPageRoute(builder: (context) => const LoginPage()));
     } else {
       // Check if the token is expired
       final bool isTokenExpired = await isAccessTokenExpired(accessToken);
@@ -72,8 +48,8 @@ class _TokenVerificationState extends State<TokenVerification> {
         // Check again after refresh
         final String? newAccessToken = await getAccessToken();
         if (newAccessToken == null) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => const LoginPage()));
+          Navigator.pushReplacement(context as BuildContext,
+              MaterialPageRoute(builder: (context) => const LoginPage()));
         } else {
           await autoLogin(newAccessToken);
         }
@@ -85,13 +61,48 @@ class _TokenVerificationState extends State<TokenVerification> {
   }
 }
 
+Future<void> autoLogin(String accessToken) async {
+  try {
+    final response = await http.post(
+      Uri.parse('${AppConstants.BASE_URL}/login'),
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+        context as BuildContext,
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
+      );
+    } else {
+      print('Auto login failed: ${response.statusCode}');
+      Navigator.pushReplacement(
+        context as BuildContext,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    }
+  } catch (e) {
+    print('Error during auto login: $e');
+    Navigator.pushReplacement(
+      context as BuildContext,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  }
+}
+
 Future<bool> isAccessTokenExpired(String accessToken) async {
   try {
-    final Map<String, dynamic> decodedToken = json.decode(
-      utf8.decode(base64Url.decode(
-        accessToken.split('.')[1],
-      )),
-    );
+    final List<String> parts = accessToken.split('.');
+    if (parts.length != 3) {
+      // Invalid token format
+      return true;
+    }
+
+    final String payload =
+        utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+    final Map<String, dynamic> decodedToken = json.decode(payload);
 
     if (decodedToken.containsKey('exp')) {
       final int expirationTime = decodedToken['exp'];
@@ -122,7 +133,7 @@ Future<void> refreshAccessToken() async {
     if (refreshToken != null) {
       final response = await http.post(
         Uri.parse(
-            'http://10.0.2.2/token/refresh'), // Replace with your server's token refresh endpoint
+            '${AppConstants.BASE_URL}/token/refresh'), // Replace with your server's token refresh endpoint
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
